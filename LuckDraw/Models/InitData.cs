@@ -19,6 +19,7 @@ namespace LuckDraw.Models
                     Account = "admin",
                     //Password = "E1ADC3949BA59ABBE56E057F2F883E",// MD5(123456)
                     Password = "123456",
+                    Email = "admin@admin.com",
                     Identity = 1,
                 });
                 context.SaveChanges();

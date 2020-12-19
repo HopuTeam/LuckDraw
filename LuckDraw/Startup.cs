@@ -1,3 +1,4 @@
+using LuckDraw.Filters;
 using LuckDraw.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,7 +28,7 @@ namespace LuckDraw
         {
             services.AddMvc(options =>
             {
-                //options.Filters.Add(typeof(AuthAttribute));
+                options.Filters.Add(typeof(AuthAttribute));
                 options.EnableEndpointRouting = false;
             });
             services.AddDbContext<CoreEntities>(options =>

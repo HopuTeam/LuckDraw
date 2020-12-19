@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,11 +10,18 @@ namespace LuckDraw.Models
     //抽奖表
     public class Draw
     {
-        public int ID{get;set;}
-        public string Name{get;set;}
-        public int SignID{get;set;}
+        [Key]
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public int SignID { get; set; }
         public int OptionID { get; set; }
 
+        [ForeignKey("SignID")]
+        public Sign Sign { get; set; }
+
+        [ForeignKey("OptionID")]
+        public Option Option { get; set; }
         public List<LuckDraw> LuckDraws { get; set; }
+        public List<Log> Logs { get; set; }
     }
 }
