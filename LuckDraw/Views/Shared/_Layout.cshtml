@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 抽奖</title>
+    <link rel="shortcut icon" href="~/favicon.ico" type="image/x-icon">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome/css/brands.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="~/Content/fontawesome/css/solid.min.css" rel="stylesheet" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-md bg-info navbar-dark">
+        <a class="navbar-brand" href="#">抽奖</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/Home/Index"><i class="fas fa-home"></i>首页</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Draw/Index"><i class="fab fa-shopify"></i>抽奖项目</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Luck/Index"><i class="fas fa-user-plus"></i>奖项管理</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#Logout" id="Logout"><i class="fas fa-running"></i>退出</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <br>
+    <div class="container">
+        @RenderBody()
+    </div>
+    <br>
+    <div class="jumbotron text-center" style="margin-bottom:0">
+        <p>Copyright &copy; 2014-@DateTime.Now.Year 抽奖</p>
+        @*<p>Powered by <a href="https://github.com/Skilemon" target="_blank">Skilemon</a> | Theme base <a href="https://getbootstarp.com" target="_blank">Bootstrap</a> & <a href="https://www.layui.com" target="_blank">Layui</a></p>*@
+        <p>Powered by <a href="https://github.com/HopuTeam" target="_blank">HopuTeam</a> | Theme base <a href="https://getbootstarp.com" target="_blank">Bootstrap</a> & <a href="https://www.layui.com" target="_blank">Layui</a></p>
+    </div>
+    <script src="~/Scripts/jquery-3.5.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Scripts/copyright.js"></script>
+    <script>
+        $("#Logout").click(function () {
+            layer.load(2, { shade: false });
+            layer.confirm('确定要退出登录？', {
+                btn: ['确定', '取消']
+            }, function () {
+                $.post("/Sign/Logout", function (res) {
+                    setTimeout(function () {
+                        layer.closeAll('loading');
+                    }, 300);
+                    if (res == "success") {
+                        layer.alert("您已退出账户！");
+                        setTimeout(function () {
+                            window.location.href = "/Sign/Index";
+                        }, 1500);
+                    } else {
+                        layer.alert(res);
+                    };
+                });
+            });
+        });
+    </script>
+    @RenderSection("scripts", false)
+</body>
+</html>
