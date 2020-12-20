@@ -13,6 +13,7 @@ namespace LuckDraw.Models
         public string Account { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
+        public bool Status { get; set; }
         public int Identity { get; set; }
         public List<Luck> Lucks { get; set; }
         //public List<Draw> Draws { get; set; }

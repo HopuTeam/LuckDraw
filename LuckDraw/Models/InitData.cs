@@ -18,9 +18,17 @@ namespace LuckDraw.Models
                 {
                     Account = "admin",
                     Password = "E1ADC3949BA59ABBE56E057F2F883E",// MD5(123456)
-                    //Password = "123456",
+                    Status = true,
                     Email = "admin@admin.com",
                     Identity = 1,
+                });
+                context.Options.Add(new Option()
+                {
+                    Name = "抽奖后排除",
+                });
+                context.Options.Add(new Option()
+                {
+                    Name = "可重复抽奖",
                 });
                 context.SaveChanges();
             }

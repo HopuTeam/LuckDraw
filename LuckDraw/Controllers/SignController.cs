@@ -20,10 +20,7 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetModel<Sign>("User") == null)
-                return View();
-            else
-                return Redirect("/Home/Index");
+            return View();
         }
         [HttpPost]
         public IActionResult Sign(Sign sign)
@@ -44,14 +41,13 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            if (HttpContext.Session.GetModel<Sign>("User") == null)
-                return View();
-            else
-                return Redirect("/Home/Index");
+            return View();
         }
         [HttpPost]
         public IActionResult Register(Sign sign)
         {
+            sign.Status = false;
+            sign.Identity = 0;
             sign.Password = Security.MD5Encrypt32(sign.Password);
             EF.Signs.Add(sign);
             if (EF.SaveChanges() > 0)
@@ -67,10 +63,7 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Forget()
         {
-            if (HttpContext.Session.GetModel<Sign>("User") == null)
-                return View();
-            else
-                return Redirect("/Home/Index");
+            return View();
         }
         [HttpPost]
         public IActionResult Forget(Sign sign)
@@ -79,9 +72,12 @@ namespace LuckDraw.Controllers
         }
 
         [HttpPost]
-        public IActionResult SentMail()
+        public IActionResult SentMail(string mail)
         {
-            return Content("");
+            if (MailExt.SendMail(mail, "Title", "Content"))
+                return Content("success");
+            else
+                return Content("邮件发送失败");
         }
     }
 }

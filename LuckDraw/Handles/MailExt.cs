@@ -23,11 +23,11 @@ namespace LuckDraw.Handles
                     Host = "smtp.ym.163.com",//设置SMTP地址
                     UseDefaultCredentials = true,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
-                    Credentials = new NetworkCredential("gm@echocode.club", "luoxinaini1314")
+                    Credentials = new NetworkCredential("work@echocode.club", "9qC3uNQJRy")
                 };
                 MailMessage Message = new MailMessage
                 {
-                    From = new MailAddress("gm@echocode.club")//与发件人保持一致(已知163要求)
+                    From = new MailAddress("work@echocode.club")//与发件人保持一致(已知163要求)
                 };
                 Message.To.Add(mail);//要发送的地址
                 Message.Subject = title;//标题
