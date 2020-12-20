@@ -13,6 +13,8 @@ namespace LuckDraw.Models
         public int ID { get; set; }
         public int LuckID { get; set; }
         public int DrawID { get; set; }
+        public int? Number { get; set; }
+        public DateTime? EntryTime { get; set; }
 
         [ForeignKey("LuckID")]
         public Luck Luck { get; set; }

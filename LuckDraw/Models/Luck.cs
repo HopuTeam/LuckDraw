@@ -21,6 +21,5 @@ namespace LuckDraw.Models
         [ForeignKey("SignID")]
         public Sign Sign { get; set; }
         public List<LuckDraw> LuckDraws { get; set; }
-        public List<Log> Logs { get; set; }
     }
 }

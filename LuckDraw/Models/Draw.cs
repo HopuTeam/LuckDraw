@@ -22,6 +22,5 @@ namespace LuckDraw.Models
         [ForeignKey("OptionID")]
         public Option Option { get; set; }
         public List<LuckDraw> LuckDraws { get; set; }
-        public List<Log> Logs { get; set; }
     }
 }
