@@ -10,10 +10,10 @@ using LuckDraw.Handles;
 namespace LuckDraw.Controllers
 {
     [AllowAnonymous]
-    public class SignController : Controller
+    public class SignController : BaseController
     {
         private CoreEntities EF { get; }
-        public SignController(CoreEntities _ef)
+        public SignController(CoreEntities _ef) : base(_ef)
         {
             EF = _ef;
         }
@@ -26,6 +26,7 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult Sign(Sign sign)
         {
+            sign.Password = Security.MD5Encrypt32(sign.Password);
             var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Password == sign.Password);
             if (mod != null)
             {
@@ -46,6 +47,7 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult Register(Sign sign)
         {
+            sign.Password = Security.MD5Encrypt32(sign.Password);
             EF.Signs.Add(sign);
             if (EF.SaveChanges() > 0)
             {
