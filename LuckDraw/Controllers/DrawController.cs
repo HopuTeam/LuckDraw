@@ -12,5 +12,26 @@ namespace LuckDraw.Controllers
         {
             return View();
         }
+
+
+        public IActionResult add()
+        {
+         return  Redirect("Draw/index");
+        }
+
+
+
+
+        // 启用codefirst迁移    enable-migrations
+        // 添加一个迁移文件      add-migration [name]     -- add-migration one
+        // 更新数据库           update-database
+
+
+
+
+
+
+
+
     }
 }
