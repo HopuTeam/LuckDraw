@@ -67,5 +67,11 @@ namespace LuckDraw.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        public IActionResult SentMail()
+        {
+            return View();
+        }
     }
 }

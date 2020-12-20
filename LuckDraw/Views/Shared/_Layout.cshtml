@@ -54,7 +54,7 @@
             layer.confirm('确定要退出登录？', {
                 btn: ['确定', '取消']
             }, function () {
-                $.post("/Sign/Logout", function (res) {
+                $.post("/User/Logout", function (res) {
                     setTimeout(function () {
                         layer.closeAll('loading');
                     }, 300);
