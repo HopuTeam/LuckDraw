@@ -16,6 +16,6 @@ namespace LuckDraw.Models
         public bool Status { get; set; }
         public int Identity { get; set; }
         public List<Luck> Lucks { get; set; }
-        //public List<Draw> Draws { get; set; }
+        public List<Draw> Draws { get; set; }
     }
 }

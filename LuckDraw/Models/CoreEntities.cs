@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,16 @@ namespace LuckDraw.Models
         public DbSet<Luck> Lucks { get; set; }
         public DbSet<LuckDraw> LuckDraws { get; set; }
         public DbSet<Option> Options { get; set; }
+
+      
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<LuckDraw>()
+                 .HasOne(t => t.Luck).WithMany()
+                 .HasForeignKey(t => t.LuckID)
+                 .OnDelete(DeleteBehavior.Restrict);
+        }
+      
     }
 }
