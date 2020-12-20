@@ -1,6 +1,7 @@
 ﻿@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
+@model LuckDraw.Models.Sign
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "主页";
@@ -9,9 +10,9 @@
 <div class="card">
     <div class="card-body">
         <p>这是一个抽奖平台，你可以自定义你的抽奖项目进行抽奖</p>
-        <p>当前登录账户：Skilemon</p>
+        <p>当前登录账户：<span class="text-primary">@Model.Account</span></p>
         <p>你的项目数量：3</p>
-        <p>你的奖项数量：4</p>
+        <p>你的奖项数量：4</p>@*@Model.Lucks.Count()*@
     </div>
 </div>
 <h2>使用说明</h2>

@@ -60,24 +60,54 @@ namespace LuckDraw.Controllers
             }
         }
 
+        string code;
         [HttpGet]
         public IActionResult Forget()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Forget(Sign sign)
+        public IActionResult Forget(string Code, Sign sign)
         {
-            return View();
+            if (Code == code)
+            {
+                var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Email == sign.Email);
+                if (mod == null)
+                {
+                    return Content("邮箱或帐号错误");
+                }
+                else
+                {
+                    mod.Password = Security.MD5Encrypt32(sign.Password);
+
+                    if (EF.SaveChanges() > 0)
+                        return Content("success");
+                    else
+                        return Content("重置密码失败，请重试");
+                }
+            }
+            else
+            {
+                return Content("验证码错误");
+            }
         }
 
         [HttpPost]
-        public IActionResult SentMail(string mail)
+        public IActionResult SentMail(string Account, string mail)
         {
-            if (MailExt.SendMail(mail, "Title", "Content"))
-                return Content("success");
+            Random random = new Random();
+            code = random.Next(1000, 9999).ToString();
+            if (EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail) == null)
+            {
+                return Content("邮箱或帐号错误");
+            }
             else
-                return Content("邮件发送失败");
+            {
+                if (MailExt.SendMail(mail, "找回密码操作", $"您本次操作的验证码是{ code }，请注意谨防验证码泄露，保护账号安全！"))
+                    return Content("success");
+                else
+                    return Content("邮件发送失败");
+            }
         }
     }
 }
