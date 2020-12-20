@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using LuckDraw.Models;
 using LuckDraw.Handles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LuckDraw.Controllers
 {
-    [AllowAnonymous]
     public class SignController : BaseController
     {
         private CoreEntities EF { get; }
@@ -21,7 +20,10 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            if (HttpContext.Session.GetModel<Sign>("User") == null)
+                return View();
+            else
+                return Redirect("/Home/Index");
         }
         [HttpPost]
         public IActionResult Sign(Sign sign)
@@ -42,7 +44,10 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            if (HttpContext.Session.GetModel<Sign>("User") == null)
+                return View();
+            else
+                return Redirect("/Home/Index");
         }
         [HttpPost]
         public IActionResult Register(Sign sign)
@@ -62,7 +67,10 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Forget()
         {
-            return View();
+            if (HttpContext.Session.GetModel<Sign>("User") == null)
+                return View();
+            else
+                return Redirect("/Home/Index");
         }
         [HttpPost]
         public IActionResult Forget(Sign sign)
@@ -73,7 +81,7 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult SentMail()
         {
-            return View();
+            return Content("");
         }
     }
 }

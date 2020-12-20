@@ -28,7 +28,7 @@ namespace LuckDraw
         {
             services.AddMvc(options =>
             {
-                options.Filters.Add(typeof(AuthAttribute));
+                //options.Filters.Add(typeof(AuthAttribute));
                 options.EnableEndpointRouting = false;
             });
             services.AddDbContext<CoreEntities>(options =>
@@ -47,7 +47,7 @@ namespace LuckDraw
 
             app.UseMvc(options =>
             {
-                options.MapRoute("Default", "{Controller=Home}/{Action=Index}");
+                options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");
             });
         }
     }

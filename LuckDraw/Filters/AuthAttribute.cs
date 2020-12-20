@@ -16,8 +16,7 @@ namespace LuckDraw.Filters
         {
             if (context.HttpContext.Session.GetModel<Sign>("User") == null)
             {
-                RedirectResult result = new RedirectResult("/Sign/Index");
-                context.Result = result;
+                context.Result = new RedirectResult("/Sign/Index");;
             }
         }
     }

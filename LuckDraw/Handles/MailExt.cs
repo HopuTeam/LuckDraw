@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LuckDraw.Handles
 {
-    public static class EmailExt
+    public static class MailExt
     {
         /// <summary>
         /// 邮件发送
