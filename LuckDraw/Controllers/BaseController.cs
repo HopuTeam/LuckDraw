@@ -19,10 +19,10 @@ namespace LuckDraw.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.Session.GetModel<Sign>("User") != null)
-            {
-                context.Result = new RedirectResult("/Home/Index");
-            }
+            //if (context.HttpContext.Session.GetModel<Sign>("User") != null)
+            //{
+            //    context.Result = new RedirectResult("/Home/Index");
+            //}
         }
     }
 }

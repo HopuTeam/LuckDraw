@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,7 +24,12 @@ namespace LuckDraw.Controllers
                 return View();
             
         }
+        public IActionResult Repeat()
+        {
 
+            return View();
+
+        }
 
         /// <summary>
         /// 可重复抽奖的方法
@@ -46,11 +52,7 @@ namespace LuckDraw.Controllers
                     elements.Add(new KeyValuePair<string, int>(item.name, item.Weigh));
                 }
 
-                foreach (var item in a)
-                {
-                    elements.Add(new KeyValuePair<string, int>(item.ToString(), 1));
-
-                };
+             
                 Random ra = new Random();
                 //概率计算
                 int allRate = 1;
@@ -61,9 +63,7 @@ namespace LuckDraw.Controllers
                 }
 
                 string selectedElement = "";
-                while (true)
-                {
-
+               
                     for (int n = 0; n < 1; n++)
                     {
                         //在规定范围产生一个随机数
@@ -83,12 +83,54 @@ namespace LuckDraw.Controllers
                             }
                         }
                         //抽到的名字
-                        ViewData["yi"] = selectedElement;
-
-                    }
-
+                        //ViewData["yi"] = selectedElement;
                 }
+            Luck luck = EF.Lucks.Where(a => a.Name == selectedElement).FirstOrDefault();
+            Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID).FirstOrDefault();
+            if (draw==null)
+            {
+                Models.LuckDraw list = new Models.LuckDraw();
+                list.LuckID = luck.ID;
+                list.DrawID = 2;
+                list.Number = 1;
+                EF.LuckDraws.Add(list);
+                EF.SaveChanges();
             }
+            else
+            {
+                draw.Number += 1;
+                EF.SaveChanges();
+            }
+
+
+            return Content(selectedElement);
+        }
+
+
+        /// <summary>
+        /// 刷新抽中的次数
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult GetOptions()
+        {
+            var a = (from luckdrawdb in EF.LuckDraws
+                     join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
+                     select new
+                     {
+                         name = luck.Name,
+                         cishu = luckdrawdb.Number
+                     }
+
+            ).ToList();
+
+            
+            return Json(a);
+        }
+
+
+
+
+
 
 
         /// <summary>
