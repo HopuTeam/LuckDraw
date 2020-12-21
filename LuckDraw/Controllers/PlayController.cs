@@ -24,11 +24,12 @@ namespace LuckDraw.Controllers
             
         }
 
-            /// <summary>
-            /// 可重复抽奖的方法
-            /// </summary>
-            /// <returns></returns>
-            public IActionResult One()
+
+        /// <summary>
+        /// 可重复抽奖的方法
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult One()
             {
                 var c = HttpContext.Session.GetModel<Luck>("User");
 
@@ -90,9 +91,37 @@ namespace LuckDraw.Controllers
             }
 
 
+        /// <summary>
+        /// 不可重复
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public IActionResult Two(int ID)
+        {
 
-
+            var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==2).ToList();
+            return View(list);
         }
+        public IActionResult NonLucky(int ID = 2)
+        {
+            var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
+            var a = mod.Count();
+            string[] list = new string[a];
+            int i = 0;
+            foreach (var item in mod)
+            {
+                var Dmod = EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID);
+                list[i] = Dmod.Name;
+                i++;
+            }
+            int index = new Random().Next(0, i);
+            string Name = list[index];
+            return Content(Name);
+        }
+
+
+
     }
+}
 
 
