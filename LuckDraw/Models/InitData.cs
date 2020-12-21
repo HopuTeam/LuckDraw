@@ -17,7 +17,6 @@ namespace LuckDraw.Models
                 // 用户信息
                 context.Signs.Add(new Sign()
                 {
-                    ID = 1,
                     Account = "admin",
                     Password = "E1ADC3949BA59ABBE56E057F2F883E",// MD5(123456)
                     Status = true,
@@ -27,7 +26,6 @@ namespace LuckDraw.Models
                 // 抽奖项信息
                 context.Lucks.Add(new Luck()
                 {
-                    ID = 1,
                     Name = "测试抽奖组",
                     Description = "测试抽奖组描述",
                     Weigh = 0,
@@ -36,7 +34,6 @@ namespace LuckDraw.Models
                 });
                 context.Lucks.Add(new Luck()
                 {
-                    ID = 2,
                     Name = "测试抽奖项",
                     Description = "测试抽奖项描述",
                     Weigh = 1,
@@ -45,7 +42,6 @@ namespace LuckDraw.Models
                 });
                 context.Lucks.Add(new Luck()
                 {
-                    ID = 3,
                     Name = "测试抽奖项",
                     Description = "测试抽奖项描述",
                     Weigh = 1,
@@ -55,14 +51,12 @@ namespace LuckDraw.Models
                 // 抽奖项目信息
                 context.Draws.Add(new Draw()
                 {
-                    ID = 1,
                     Name = "测试抽奖后排除",
                     SignID = 1,
                     OptionID = 1,
                 });
                 context.Draws.Add(new Draw()
                 {
-                    ID = 2,
                     Name = "测试可重复抽奖",
                     SignID = 1,
                     OptionID = 2,
@@ -70,12 +64,10 @@ namespace LuckDraw.Models
                 // 选项信息
                 context.Options.Add(new Option()
                 {
-                    ID = 1,
                     Name = "抽奖后排除",
                 });
                 context.Options.Add(new Option()
                 {
-                    ID = 2,
                     Name = "可重复抽奖",
                 });
                 // 幸运抽奖表信息

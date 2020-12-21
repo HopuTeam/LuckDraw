@@ -27,6 +27,10 @@ namespace LuckDraw.Controllers
         {
             sign.Password = Security.MD5Encrypt32(sign.Password);
             var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Password == sign.Password);
+            var query = (from s in EF.Signs
+                         join l in EF.Lucks on s.ID equals l.SignID
+                         join d in EF.Draws on s.ID equals d.SignID
+                         select new { s, l, d }).ToList();
             if (mod != null)
             {
                 HttpContext.Session.SetModel("User", mod);
