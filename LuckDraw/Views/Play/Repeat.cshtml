@@ -58,9 +58,13 @@
 
             $.post('/play/One', {}, (res) => {
 
-
-                layer.alert(`抽奖动画未实现<br>本次抽取到的人是：${res}`);
-                getdata();
+                if (res == "0") {
+                    layer.alert(`抽奖项目为空`);
+                } else {
+                    layer.alert(`本次抽取到的人是：${res}`);
+                    getdata();
+                }
+               
 
             })
         }

@@ -24,8 +24,8 @@
                         <label>类型</label>
                         <div class="col-md-10">
                             <select class="form-control" id="LuckType" name="LuckType">
-                                <option value="0">重复利用奖项抽取</option>
-                                <option value="1">每次抽取完成后排除奖项</option>
+                                <option value="1">重复利用奖项抽取</option>
+                                <option value="2">每次抽取完成后排除奖项</option>
                             </select>
                         </div>
                     </div>
@@ -41,8 +41,45 @@
             </div>
         </form>
     </div>
-
 </div>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-success">
+                <div class="panel-heading">重复 <span class="glyphicon glyphicon-remove" style="float: right;" onclick="del(141)"></span></div>
+                <div class="panel-body">
+                    <p class="bg-success" style="padding:8px 15px;border-radius:5px;">重复利用奖项抽取</p>
+                    <span>项目包含总奖项数量：5</span>
+                    <hr />
+                    <a href="/play/repeat/141" class="btn btn-primary">开始抽奖</a>
+                    <a href="setoptions/141" class="btn btn-success">奖项配置</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-danger">
+                <div class="panel-heading">一号抽奖 <span class="glyphicon glyphicon-remove" style="float: right;" onclick="del(133)"></span></div>
+                <div class="panel-body">
+                    <p class="bg-danger" style="padding:8px 15px;border-radius:5px;">每次抽取完成后排除奖项</p>
+                    <span>当前剩余奖项：0</span>
+                    <hr />
+                    <a href="/play/except/133" class="btn btn-primary">开始抽奖</a>
+                    <a href="setoptions/133" class="btn btn-success">奖项配置</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
 @section scripts{
 
     <script>
@@ -51,13 +88,18 @@
                 LuckType: $('#LuckType').val(),
                 Name: $('#Name').val()
             }
+            debugger
             var win = layer.load();
             $.post('/Draw/add', paras, (res) => {
-                layer.close(win);
-                if (res.succ)
-                    window.location.reload();
-                else
-                    layer.msg(res.msg);
+                if (res > 0) {
+                    layer.msg("添加成功");
+
+                } else {
+                    layer.msg("添加出错");
+                }
+                setTimeout(function () {
+                    layer.closeAll('loading');
+                }, 350);
             })
         }
 
