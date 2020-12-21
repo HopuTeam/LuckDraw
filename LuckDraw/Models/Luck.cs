@@ -17,9 +17,5 @@ namespace LuckDraw.Models
         public int Weigh { get; set; }
         public int SignID { get; set; }
         public int ParentID { get; set; }
-
-        [ForeignKey("SignID")]
-        public Sign Sign { get; set; }
-        public List<LuckDraw> LuckDraws { get; set; }
     }
 }

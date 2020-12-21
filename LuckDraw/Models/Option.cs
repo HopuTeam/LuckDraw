@@ -12,6 +12,5 @@ namespace LuckDraw.Models
         [Key]
         public int ID { get; set; }
         public string Name { get; set; }
-        public List<Draw> Draws { get; set; }
     }
 }

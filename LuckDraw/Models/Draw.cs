@@ -15,17 +15,5 @@ namespace LuckDraw.Models
         public string Name { get; set; }
         public int SignID { get; set; }
         public int OptionID { get; set; }
-
-        //[ForeignKey("SignID")]
-        //public Sign Sign { get; set; }
-
-        [ForeignKey("OptionID")]
-        public Option Option { get; set; }
-
-        [ForeignKey("SignID")]
-        public Sign  Sign { get; set; }
-        public List<LuckDraw> LuckDraws { get; set; }
-
-
     }
 }
