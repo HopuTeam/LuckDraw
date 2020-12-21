@@ -11,7 +11,6 @@ namespace LuckDraw.Controllers
 {
     public class UserController : Controller
     {
-        //string code;
         private CoreEntities EF { get; }
         public UserController(CoreEntities _ef)
         {
@@ -38,7 +37,7 @@ namespace LuckDraw.Controllers
                 var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Email == sign.Email);
                 if (mod == null)
                 {
-                    return Content("邮箱或帐号错误");
+                    return Content("<script>alert('account or mail info error');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
                 }
                 else
                 {
@@ -47,12 +46,12 @@ namespace LuckDraw.Controllers
                     if (EF.SaveChanges() > 0)
                         return Content("<script>alert('认证成功');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
                     else
-                        return Content("认证失败，请重试");
+                        return Content("<script>alert('认证失败，请重试');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
                 }
             }
             else
             {
-                return Content("认证码错误");
+                return Content("<script>alert('认证码错误');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
             }
         }
 

@@ -2,9 +2,19 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/LuckDraw",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:53648",
       "sslPort": 44318
+    }
+  },
+  "profiles": {
+    "LuckDraw": {
+      "commandName": "IISExpress",
+      "launchBrowser": true
     }
   }
 }
