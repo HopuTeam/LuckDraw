@@ -2,9 +2,10 @@
 @{
     ViewData["Title"] = "NonLucky";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var tit = ViewData["tit"] as LuckDraw.Models.Draw;
 } 
    <fieldset class="layui-elem-field layui-field-title">
-    <legend>基础效果</legend>
+    <legend>@tit.Name</legend>
 </fieldset>
 @*<h2>@Model.FirstOrDefault().Draw.Name</h2>*@
 <hr />
@@ -13,16 +14,17 @@
     <div>
         @foreach (var item in Model)
         {
-            <button class="Choujian btn">@item.LuckID</button>
+            <button class="btn btn-light" onclick="oldID(@item.LuckID)">@item.LuckID</button>
         }
     </div>
-    <a href="/Play/NonLucky" class="Chou btn">抽取幸运观众</a>
+    <button type="button" class="btn btn-link">抽取幸运观众</button>
+   
     <div>
         @foreach (var item in Model)
         {
             if (item.EntryTime != null)
             {
-                <button class="Choujian btn new">@item.LuckID</button>
+                <button class="btn btn-success"  onclick="edID(@item.LuckID)"></button>
             }
         }
     </div>
@@ -36,12 +38,36 @@
     @*<script src="~/Scripts/jquery-3.5.1.min.js"></script>*@
     <script>
 
-        $(".Chou").click(function () {
+        $(".btn-link").click(function () {
             $.get("/Play/NonLucky", {}, function (Msg) {
                 alert(Msg);
                 window.location.reload()  //刷新页面
             })
         })
+
+
+                function edID(id) {
+                    var data = {
+                        ID: id,
+                    };
+                    $.get("/Play/TwoDelete", data, function (Msg) {
+                        alert(Msg);
+                        window.location.reload()  //刷新页面
+                    })
+                }
+        oldID
+
+  
+
+        function oldID(id) {
+            var data = {
+                ID: id,
+            };
+            $.get("/Play/TwoDelete", data, function (Msg) {
+                alert(Msg);
+                window.location.reload()  //刷新页面
+            })
+        }
 
     </script>
 }

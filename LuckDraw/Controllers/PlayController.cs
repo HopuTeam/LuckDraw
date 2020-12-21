@@ -138,13 +138,15 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public IActionResult Two(int ID)
+        public IActionResult Two(int ID=2)//ID前端传Draws的id 直接调用
         {
 
-            var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==2).ToList();
+            var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==ID).ToList();
+            var title = EF.Draws.FirstOrDefault(x => x.ID == ID);
+            ViewData["tit"] = title;
             return View(list);
         }
-        public IActionResult NonLucky(int ID = 2)
+        public IActionResult NonLucky(int ID = 2)//ID前端传Draws的id
         {
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();
@@ -157,12 +159,33 @@ namespace LuckDraw.Controllers
                 i++;
             }
             int index = new Random().Next(0, i);
-            string Name = list[index];
+            string Name = list[index];//幸运观众的名字
+            var luckID = (from x in EF.LuckDraws
+                           join y in EF.Lucks on x.DrawID equals y.ID
+                           where y.Name == Name
+                           select x.ID).FirstOrDefault();
+            var EideTime = EF.LuckDraws.FirstOrDefault(x=>x.ID==);
+            EideTime.EntryTime = DateTime.Now;
+            EF.SaveChanges();
             return Content(Name);
         }
-
-
-
+        //移除待抽奖项
+        public IActionResult TwoAdd(int id)
+        {
+            var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
+            mod.EntryTime = DateTime.Now;
+            EF.SaveChanges();
+            return Content("成功");
+        }
+        //移除抽到
+        public IActionResult TwoDelete(int id)
+        {
+            var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
+            mod.EntryTime =null;
+            EF.LuckDraws.Add(mod);
+            EF.SaveChanges();
+            return Content("成功");
+        }
     }
 }
 
