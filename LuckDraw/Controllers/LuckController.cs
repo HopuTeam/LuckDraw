@@ -24,8 +24,9 @@ namespace LuckDraw.Controllers
       
         public IActionResult Edit()
         {
-            var li = EF.Lucks.ToList();
             
+            
+
             EF.SaveChanges();
             return View("Luck/index");
         }
