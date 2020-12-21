@@ -6,22 +6,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "主页";
 }
-<h2>欢迎使用抽抽奖</h2>
+<h3>欢迎使用抽奖</h3>
 <div class="card">
     <div class="card-body">
         <p>这是一个抽奖平台，你可以自定义你的抽奖项目进行抽奖</p>
         <p>当前登录账户：<span class="text-primary">@Model.Account</span></p>
-        <p>你的项目数量：3</p>
-        <p>你的奖项数量：4</p>@*@Model.Lucks.Count()*@
+        <p>你的项目数量：<span class="text-danger">null</span></p>
+        <p>你的奖项数量：<span class="text-danger">null</span></p>@*@Model.Lucks.Count()*@
     </div>
 </div>
-<h2>使用说明</h2>
+<br />
+<h3>使用说明</h3>
 <div class="card">
     <div class="card-body">
-        
+        <p>没什么好说的</p>
     </div>
 </div>
-<h2>关于</h2>
+<br />
+<h3>关于</h3>
 <div class="card">
     <div class="card-body">
         <p>没什么好说的</p>
