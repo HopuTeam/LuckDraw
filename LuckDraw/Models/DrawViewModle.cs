@@ -31,7 +31,5 @@ namespace LuckDraw.Models
         /// 项目包含的奖项数量
         /// </summary>
         public int LuckCount { get; set; }
-
-       
     }
 }

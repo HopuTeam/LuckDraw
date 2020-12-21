@@ -22,11 +22,32 @@ namespace LuckDraw.Controllers
             return View(EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID));
         }
 
-        //[HttpPost]
-        //public IActionResult Edit(Sign sign)
-        //{
+        [HttpPost]
+        public IActionResult Edit(Sign sign)
+        {
+            var mod = EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID);
+            if (sign.Password == null)
+            {
+                if (mod.Email == sign.Email)
+                    return Content("未进行任何修改");
 
-        //}
+                mod.Email = sign.Email;
+                mod.Status = false;
+                EF.SaveChanges();
+                return Content("success");
+            }
+            else
+            {
+                if (mod.Email != sign.Email)
+                {
+                    mod.Email = sign.Email;
+                    mod.Status = false;
+                }
+                mod.Password = Security.MD5Encrypt32(sign.Password);
+                EF.SaveChanges();
+                return Content("success");
+            }
+        }
 
         [HttpPost]
         public IActionResult Logout()
@@ -38,7 +59,7 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult Auth(string Code, Sign sign)
         {
-            if (Code == HttpContext.Session.GetString("Code"))
+            if (Code != HttpContext.Session.GetString("Code"))
                 return Content("<script>alert('认证码错误');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
 
             var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Email == sign.Email);
@@ -61,7 +82,7 @@ namespace LuckDraw.Controllers
                 return Redirect("/Sign/Index");
 
             Random random = new Random();
-            HttpContext.Session.SetString("Code", Security.MD5Encrypt16(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
+            HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
             if (EF.Signs.FirstOrDefault(x => x.Email == mod.Email) == null)
                 return Content("邮箱验证错误");
 

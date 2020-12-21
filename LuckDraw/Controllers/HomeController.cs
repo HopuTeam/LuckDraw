@@ -23,6 +23,7 @@ namespace LuckDraw.Controllers
                        join d in EF.Draws on s.ID equals d.SignID
                        where s.Account == HttpContext.Session.GetModel<Sign>("User").Account
                        select new { s, l, d }).FirstOrDefault();
+
             return View(mod);
         }
     }
