@@ -148,6 +148,7 @@ namespace LuckDraw.Controllers
         }
         public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
         {
+            
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();
             string[] list = new string[a];
@@ -169,22 +170,24 @@ namespace LuckDraw.Controllers
             EF.SaveChanges();
             return Content(Name);
         }
-        //移除待抽奖项
-        public IActionResult TwoAdd(int id)
+  
+        //移除
+        public IActionResult TwoEide(int id)
         {
             var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
-            mod.EntryTime = DateTime.Now;
-            EF.SaveChanges();
+            if (mod.EntryTime == null)
+            {
+                mod.EntryTime = DateTime.Now;      //移除待抽奖项
+
+            }
+            else {
+                mod.EntryTime = null;    //移除抽到
+            }
+                 EF.SaveChanges();
             return Content("成功");
         }
-        //移除抽到
-        public IActionResult TwoDelete(int id)
-        {
-            var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
-            mod.EntryTime =null;
-            EF.SaveChanges();
-            return Content("成功");
-        }
+    
+
     }
 }
 

@@ -16,7 +16,7 @@
         {
             if (item.EntryTime == null)
             { 
-            <button class="btn btn-light" onclick="oldID(@item.ID)">@item.LuckID</button>
+            <button class="btn btn-light" onclick="ID(@item.ID)">@item.Luck.Name</button>
             }
         }
     </div>
@@ -27,7 +27,7 @@
         {
             if (item.EntryTime != null)
             {
-                <button class="btn btn-danger" onclick="edID(@item.ID)">@item.LuckID</button>
+        <button class="btn btn-danger" onclick="ID(@item.ID)">@item.Luck.Name</button>
             }
         }
     </div>
@@ -49,28 +49,15 @@
         })
 
 
-        function edID(id) {
+        function ID(id) {
             var data = {
-                ID: id,
+              ID: id,
             };
-            $.get("/Play/TwoDelete", data, function (Msg) {
+            $.get("/Play/TwoEide", data, function (Msg) {
                 alert(Msg);
                 window.location.reload()  //刷新页面
             })
-        }
-        oldID
-
-
-
-        function oldID(id) {
-            var data = {
-                ID: id,
-            };
-            $.get("/Play/TwoDelete", data, function (Msg) {
-                alert(Msg);
-                window.location.reload()  //刷新页面
-            })
-        }
+      }
 
     </script>
 }
