@@ -36,10 +36,11 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <returns></returns>
         public IActionResult One()
-            {
-                var c = HttpContext.Session.GetModel<Luck>("User");
+       {
+                var c = HttpContext.Session.GetModel<Sign>("User");
 
                 var a = (from lu in EF.Lucks
+                         where lu.ParentID>0 &&lu.SignID==c.ID
                          select new
                          {
                              name = lu.Name,
@@ -62,15 +63,10 @@ namespace LuckDraw.Controllers
                     allRate += item.Value;
                 }
 
-                string selectedElement = "";
-               
-                    for (int n = 0; n < 1; n++)
-                    {
+                string selectedElement = "";                                
                         //在规定范围产生一个随机数
-                        int diceRoll = ra.Next(1, allRate);
-
+                        int diceRoll = ra.Next(0, allRate);
                         int cumulative = 0;
-
                         for (int i = 0; i < elements.Count; i++)
                         {
                             cumulative += elements[i].Value;
@@ -83,15 +79,14 @@ namespace LuckDraw.Controllers
                             }
                         }
                         //抽到的名字
-                        //ViewData["yi"] = selectedElement;
-                }
+                        //ViewData["yi"] = selectedElement;               
             Luck luck = EF.Lucks.Where(a => a.Name == selectedElement).FirstOrDefault();
             Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID).FirstOrDefault();
             if (draw==null)
             {
                 Models.LuckDraw list = new Models.LuckDraw();
                 list.LuckID = luck.ID;
-                list.DrawID = 2;
+                list.DrawID = 1;
                 list.Number = 1;
                 EF.LuckDraws.Add(list);
                 EF.SaveChanges();
@@ -101,8 +96,6 @@ namespace LuckDraw.Controllers
                 draw.Number += 1;
                 EF.SaveChanges();
             }
-
-
             return Content(selectedElement);
         }
 
@@ -113,8 +106,10 @@ namespace LuckDraw.Controllers
         /// <returns></returns>
         public IActionResult GetOptions()
         {
+            var c = HttpContext.Session.GetModel<Sign>("User");
             var a = (from luckdrawdb in EF.LuckDraws
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
+                     where luck.SignID==c.ID
                      select new
                      {
                          name = luck.Name,

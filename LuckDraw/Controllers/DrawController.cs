@@ -18,19 +18,47 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-           // var sid = HttpContext.Session.GetModel<Sign>("User").ID;
-            //var list = from draw in EF.Draws
-                       //where draw.SignID == sid
-                       //join luck in EF.Lucks on draw.SignID equals luck.SignID
-                      // join option in EF.Options on draw.OptionID equals option.ID
-                       //select new
-                      // {
-                           //name = draw.Name,
-                         //  mode = option.Name,
-                          
-                     //}
-            return View();
+            var sid = HttpContext.Session.GetModel<Sign>("User").ID;
+            var list = (from dr in EF.Draws
+                     where dr.SignID == sid
+                     join op in EF.Options on dr.OptionID equals op.ID    
+                     select new
+                     {
+                       
+                         drname = dr.Name,
+                         opname = op.Name,
+                         opid = op.ID,
+                         zongshu = (
+                        from lcda in EF.LuckDraws
+                        where lcda.DrawID == dr.ID
+                        select lcda.DrawID                        
+                        ).Count(),
+                        luckdrawDrawID=(
+                         from lcda in EF.LuckDraws
+                         where lcda.DrawID == dr.ID
+                         select lcda.DrawID
+                        ).FirstOrDefault()
+                     }).ToList();
+
+            var res = new List<DrawViewModle>();
+            foreach (var item in list)
+            {
+                res.Add(new DrawViewModle
+                {
+                    DrawName = item.drname,
+                    OptionName = item.opname,
+                    OptionID = item.opid,
+                    LuckCount = item.zongshu,
+                     LuckdrawDrawID=item.luckdrawDrawID
+                });
+            }
+          
+            return View(res);
+           
         }
+
+     
+    
 
 
         public IActionResult Add(string LuckType, string Name)
