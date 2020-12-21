@@ -3,8 +3,8 @@
     ViewData["Title"] = "NonLucky";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var tit = ViewData["tit"] as LuckDraw.Models.Draw;
-} 
-   <fieldset class="layui-elem-field layui-field-title">
+}
+<fieldset class="layui-elem-field layui-field-title">
     <legend>@tit.Name</legend>
 </fieldset>
 @*<h2>@Model.FirstOrDefault().Draw.Name</h2>*@
@@ -14,17 +14,20 @@
     <div>
         @foreach (var item in Model)
         {
-            <button class="btn btn-light" onclick="oldID(@item.LuckID)">@item.LuckID</button>
+            if (item.EntryTime == null)
+            { 
+            <button class="btn btn-light" onclick="oldID(@item.ID)">@item.LuckID</button>
+            }
         }
     </div>
     <button type="button" class="btn btn-link">抽取幸运观众</button>
-   
+
     <div>
         @foreach (var item in Model)
         {
             if (item.EntryTime != null)
             {
-                <button class="btn btn-success"  onclick="edID(@item.LuckID)"></button>
+                <button class="btn btn-danger" onclick="edID(@item.ID)">@item.LuckID</button>
             }
         }
     </div>
@@ -46,18 +49,18 @@
         })
 
 
-                function edID(id) {
-                    var data = {
-                        ID: id,
-                    };
-                    $.get("/Play/TwoDelete", data, function (Msg) {
-                        alert(Msg);
-                        window.location.reload()  //刷新页面
-                    })
-                }
+        function edID(id) {
+            var data = {
+                ID: id,
+            };
+            $.get("/Play/TwoDelete", data, function (Msg) {
+                alert(Msg);
+                window.location.reload()  //刷新页面
+            })
+        }
         oldID
 
-  
+
 
         function oldID(id) {
             var data = {

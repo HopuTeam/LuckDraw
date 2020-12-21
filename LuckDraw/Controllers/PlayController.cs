@@ -138,7 +138,7 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public IActionResult Two(int ID=2)//ID前端传Draws的id 直接调用
+        public IActionResult Two(int ID=1)//ID前端传Draws的id 直接调用
         {
 
             var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==ID).ToList();
@@ -146,7 +146,7 @@ namespace LuckDraw.Controllers
             ViewData["tit"] = title;
             return View(list);
         }
-        public IActionResult NonLucky(int ID = 2)//ID前端传Draws的id
+        public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
         {
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();
@@ -160,11 +160,11 @@ namespace LuckDraw.Controllers
             }
             int index = new Random().Next(0, i);
             string Name = list[index];//幸运观众的名字
-            var luckID = (from x in EF.LuckDraws
-                           join y in EF.Lucks on x.DrawID equals y.ID
-                           where y.Name == Name
-                           select x.ID).FirstOrDefault();
-            var EideTime = EF.LuckDraws.FirstOrDefault(x=>x.ID==);
+            var luckID = (from x in EF.Lucks
+                          join y in EF.LuckDraws on x.ID equals y.LuckID
+                          where x.Name==Name
+                          select y.ID).FirstOrDefault();
+            var EideTime = EF.LuckDraws.FirstOrDefault(x=>x.ID==luckID);
             EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
             return Content(Name);
@@ -182,7 +182,6 @@ namespace LuckDraw.Controllers
         {
             var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
             mod.EntryTime =null;
-            EF.LuckDraws.Add(mod);
             EF.SaveChanges();
             return Content("成功");
         }
