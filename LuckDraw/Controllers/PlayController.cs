@@ -172,26 +172,23 @@ namespace LuckDraw.Controllers
             var EideTime = EF.LuckDraws.FirstOrDefault(x=>x.ID==luckID);
             EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
-            return Content(Name);
+            return Content($"抽奖成功,恭喜 { Name } 同学");
         }
-  
+        
         //移除
         public IActionResult TwoEide(int id)
         {
             var mod = EF.LuckDraws.FirstOrDefault(x => x.ID == id);
             if (mod.EntryTime == null)
             {
-                mod.EntryTime = DateTime.Now;      //移除待抽奖项
-
+                mod.EntryTime = DateTime.Now;
             }
             else {
-                mod.EntryTime = null;    //移除抽到
+                mod.EntryTime = null;
             }
                  EF.SaveChanges();
-            return Content("成功");
+            return Content("success");
         }
-    
-
     }
 }
 

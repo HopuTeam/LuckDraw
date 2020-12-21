@@ -4,60 +4,60 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var tit = ViewData["tit"] as LuckDraw.Models.Draw;
 }
-<fieldset class="layui-elem-field layui-field-title">
-    <legend>@tit.Name</legend>
-</fieldset>
-@*<h2>@Model.FirstOrDefault().Draw.Name</h2>*@
+<h2>@tit.Name</h2>
 <hr />
-<div>
-    <h3>待抽奖项</h3>
-    <div>
-        @foreach (var item in Model)
-        {
-            if (item.EntryTime == null)
-            { 
-            <button class="btn btn-light" onclick="ID(@item.ID)">@item.Luck.Name</button>
-            }
-        }
-    </div>
-    <button type="button" class="btn btn-link">抽取幸运观众</button>
-
-    <div>
-        @foreach (var item in Model)
-        {
-            if (item.EntryTime != null)
+<div class="row">
+    <div class="col">
+        <h3>待抽奖项</h3><br />
+        <div>
+            @foreach (var item in Model)
             {
-        <button class="btn btn-danger" onclick="ID(@item.ID)">@item.Luck.Name</button>
+                if (item.EntryTime == null)
+                {
+                    <button class="btn btn-success" onclick="ID(@item.ID)">@item.Luck.Name&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></button>
+                }
             }
-        }
+        </div>
     </div>
-</div>
-<div>
-
+    <div class="col">
+        <button type="button" id="Chou" class="btn btn-primary">抽取幸运观众</button>
+    </div>
+    <div class="col">
+        <h3>已抽奖项</h3><br />
+        <div>
+            @foreach (var item in Model)
+            {
+                if (item.EntryTime != null)
+                {
+                    <button class="btn btn-sm btn-warning" onclick="ID(@item.ID)">@item.Luck.Name&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i><br />@item.EntryTime</button>
+                }
+            }
+        </div>
+    </div>
 </div>
 
 @section scripts{
-
-    @*<script src="~/Scripts/jquery-3.5.1.min.js"></script>*@
     <script>
-
-        $(".btn-link").click(function () {
+        $("#Chou").click(function () {
             $.get("/Play/NonLucky", {}, function (Msg) {
-                alert(Msg);
-                window.location.reload()  //刷新页面
-            })
-        })
-
+                layer.alert(Msg);
+                setTimeout(function () {
+                    window.location.reload();
+                }, 1500);
+            });
+        });
 
         function ID(id) {
             var data = {
-              ID: id,
+                ID: id,
             };
             $.get("/Play/TwoEide", data, function (Msg) {
-                alert(Msg);
-                window.location.reload()  //刷新页面
-            })
-      }
-
+                if (Msg == "success") {
+                    window.location.reload();
+                } else {
+                    layer.alert(Msg);
+                };
+            });
+        };
     </script>
 }
