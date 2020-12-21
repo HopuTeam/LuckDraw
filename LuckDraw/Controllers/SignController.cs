@@ -103,7 +103,7 @@ namespace LuckDraw.Controllers
             }
             else
             {
-                if (MailExt.SendMail(mail, "找回密码操作", $"您本次操作的验证码是{ code }，请注意谨防验证码泄露，保护账号安全！"))
+                if (MailExt.SendMail(mail, "找回密码操作", $"您本次操作的验证码是 <span style='color:red;'>{ code }</span> ，请注意谨防验证码泄露，保护账号安全！"))
                     return Content("success");
                 else
                     return Content("邮件发送失败");
