@@ -24,31 +24,43 @@ namespace LuckDraw.Controllers
                 return View();
             
         }
-        public IActionResult Repeat()
+        public IActionResult Repeat(int LuckdrawDrawID)
         {
+            var DrawName = (from luckdraw in EF.LuckDraws
+                            where luckdraw.DrawID == LuckdrawDrawID
+                            join dr in EF.Draws on luckdraw.DrawID equals dr.ID
+                            select dr.Name).FirstOrDefault();
 
-            return View();
-
+            PlayViweModel view = new PlayViweModel();
+            view.Drawname = DrawName;
+            view.Drawid = LuckdrawDrawID;
+            return View(view);
+            
         }
 
         /// <summary>
         /// 可重复抽奖的方法
         /// </summary>
         /// <returns></returns>
-        public IActionResult One()
+        public IActionResult One(int Drawid)
        {
-                var c = HttpContext.Session.GetModel<Sign>("User");
+                var User = HttpContext.Session.GetModel<Sign>("User");
 
-                var a = (from lu in EF.Lucks
-                         where lu.ParentID>0 &&lu.SignID==c.ID
-                         select new
-                         {
-                             name = lu.Name,
-                             Weigh = lu.Weigh
-                         }).ToList();
-                //string[] a = new string[5] { "1", "2", "3","4","5"};
-                List<KeyValuePair<string, int>> elements = new List<KeyValuePair<string, int>>();
-                foreach (var item in a)
+               
+
+            var model = (from luckdraw in EF.LuckDraws
+                        where luckdraw.DrawID == Drawid
+                        join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
+                        where luck1.SignID == User.ID
+                        select new
+                        {
+                            name = luck1.Name,
+                            Weigh = luck1.Weigh
+                        }).ToList();
+
+
+            List<KeyValuePair<string, int>> elements = new List<KeyValuePair<string, int>>();
+                foreach (var item in model)
                 {
                     elements.Add(new KeyValuePair<string, int>(item.name, item.Weigh));
                 }
@@ -104,10 +116,11 @@ namespace LuckDraw.Controllers
         /// 刷新抽中的次数
         /// </summary>
         /// <returns></returns>
-        public IActionResult GetOptions()
+        public IActionResult GetOptions(int Drawid)
         {
             var c = HttpContext.Session.GetModel<Sign>("User");
             var a = (from luckdrawdb in EF.LuckDraws
+                     where luckdrawdb.DrawID== Drawid
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
                      where luck.SignID==c.ID
                      select new

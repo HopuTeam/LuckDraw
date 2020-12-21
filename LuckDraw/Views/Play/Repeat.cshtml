@@ -1,10 +1,10 @@
-﻿@{
+﻿@using  LuckDraw.Models
+@model PlayViweModel
+@{
     ViewData["Title"] = "Repeat";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h2>重复</h2>
-
+<h2>@Model.Drawname</h2>
 <hr />
 
 <div class="container">
@@ -34,13 +34,13 @@
 
 @section scripts{
     <script>
-          $(document).ready(function () {
+        $(document).ready(function () {
             getdata();
         });
 
         function getdata() {
             var win = layer.load();
-            $.post('/play/GetOptions', {  }, (res) => {
+            $.post('/play/GetOptions', {Drawid:@Model.Drawid}, (res) => {
                 layer.close(win);
                 var content = '', divhtml = '';
                 for (item of res) {
@@ -56,7 +56,7 @@
         function smoke() {
 
 
-            $.post('/play/One', {}, (res) => {
+            $.post('/play/One', {Drawid:@Model.Drawid}, (res) => {
 
                 if (res == "0") {
                     layer.alert(`抽奖项目为空`);
@@ -64,13 +64,13 @@
                     layer.alert(`本次抽取到的人是：${res}`);
                     getdata();
                 }
-               
+
 
             })
         }
     </script>
 }
-           
+
 
 
 

@@ -57,12 +57,12 @@
                         <hr />
                         @if (item.OptionID == 1)
                         {
-                            <a href="/play/repeat/@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
+                            <a href="/play/repeat?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
                         }
                         else
                         {
-                            <a href="/play/repeat/@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/play/Two?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
                             <a href="setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
                         }
 

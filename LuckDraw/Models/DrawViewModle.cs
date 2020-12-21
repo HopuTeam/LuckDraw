@@ -32,4 +32,10 @@ namespace LuckDraw.Models
         /// </summary>
         public int LuckCount { get; set; }
     }
+
+    public class PlayViweModel
+    {
+        public string Drawname { get; set; }
+        public int Drawid { get; set; }
+    }
 }
