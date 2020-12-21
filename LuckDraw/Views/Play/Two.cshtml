@@ -1,63 +1,32 @@
-﻿@model List<LuckDraw.Models.LuckDraw>
+﻿
 @{
-    ViewData["Title"] = "NonLucky";
+    ViewData["Title"] = "Two";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var tit = ViewData["tit"] as LuckDraw.Models.Draw;
 }
-<h2>@tit.Name</h2>
-<hr />
-<div class="row">
-    <div class="col">
-        <h3>待抽奖项</h3><br />
-        <div>
-            @foreach (var item in Model)
-            {
-                if (item.EntryTime == null)
-                {
-                    @*<button class="btn btn-success" onclick="ID(@item.ID)">@item.Luck.Name&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i></button>*@
-                }
-            }
-        </div>
-    </div>
-    <div class="col">
-        <button type="button" id="Chou" class="btn btn-primary">抽取幸运观众</button>
-    </div>
-    <div class="col">
-        <h3>已抽奖项</h3><br />
-        <div>
-            @foreach (var item in Model)
-            {
-                if (item.EntryTime != null)
-                {
-                    @*<button class="btn btn-sm btn-warning" onclick="ID(@item.ID)">@item.Luck.Name&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i><br />@item.EntryTime</button>*@
-                }
-            }
-        </div>
-    </div>
-</div>
 
+<h1>Two</h1>
 @section scripts{
     <script>
-        $("#Chou").click(function () {
-            $.get("/Play/NonLucky", {}, function (Msg) {
-                layer.alert(Msg);
-                setTimeout(function () {
-                    window.location.reload();
-                }, 1500);
-            });
+        $(document).ready(function () {
+        getdata();
         });
 
-        function ID(id) {
-            var data = {
-                ID: id,
-            };
-            $.get("/Play/TwoEide", data, function (Msg) {
-                if (Msg == "success") {
-                    window.location.reload();
-                } else {
-                    layer.alert(Msg);
-                };
-            });
-        };
+        function getdata() {
+            var win = layer.load();
+
+            $.post("/play/Updata", {}, function (res) {
+                layer.close(win);
+                for (item of res) {
+                    if (item.Time == null) {
+                        console.log(item.id + item.name + item.time);
+                    } else {
+                        console.log("time不为空");
+                    }
+                }
+            })
+        }
+
+
     </script>
-}
+
+    }

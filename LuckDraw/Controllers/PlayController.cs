@@ -146,14 +146,40 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <param name="ID"></param>
         /// <returns></returns>
-        public IActionResult Two(int ID=1)//ID前端传Draws的id 直接调用
+        /// 
+
+        public IActionResult Two() 
+        {
+            return View();
+        }
+
+        public IActionResult Updata(int ID=1)//ID前端传Draws的id 直接调用
         {
 
 
-            var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==ID).ToList();
-            var title = EF.Draws.FirstOrDefault(x => x.ID == ID);
-            ViewData["tit"] = title;
-            return View(list);
+            var list = (from LuckDraw in EF.LuckDraws
+                        join Luck in EF.Lucks on LuckDraw.LuckID equals Luck.ID
+                        join Draw in EF.Draws on LuckDraw.DrawID equals Draw.ID
+                        where LuckDraw.DrawID == Draw.ID
+                        select new
+                        {
+                            ID=LuckDraw.ID,
+                            Name = Luck.Name,
+                            Time = LuckDraw.EntryTime,
+                        }).ToList();
+            //foreach (var item in list)
+            //{
+            //    if (item.Time == null)
+            //    {
+            //        return Json();
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}
+            return Json(list);
+   
         }
         public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
         {
