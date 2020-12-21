@@ -26,11 +26,11 @@ namespace LuckDraw.Controllers
         public IActionResult Sign(Sign sign)
         {
             sign.Password = Security.MD5Encrypt32(sign.Password);
-            var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Password == sign.Password);
-            var query = (from s in EF.Signs
-                         join l in EF.Lucks on s.ID equals l.SignID
-                         join d in EF.Draws on s.ID equals d.SignID
-                         select new { s, l, d }).ToList();
+            //var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Password == sign.Password);
+            var mod = (from s in EF.Signs
+                       where s.Account == sign.Account && s.Password == sign.Password
+                       select s).FirstOrDefault();
+
             if (mod != null)
             {
                 HttpContext.Session.SetModel("User", mod);
@@ -50,17 +50,20 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult Register(Sign sign)
         {
-            sign.Status = false;
-            sign.Identity = 0;
-            sign.Password = Security.MD5Encrypt32(sign.Password);
-            EF.Signs.Add(sign);
-            if (EF.SaveChanges() > 0)
+            if (EF.Signs.FirstOrDefault(x => x.Account == sign.Account) == null)
             {
-                return Content("success");
+                sign.Status = false;
+                sign.Identity = 0;
+                sign.Password = Security.MD5Encrypt32(sign.Password);
+                EF.Signs.Add(sign);
+                if (EF.SaveChanges() > 0)
+                    return Content("success");
+                else
+                    return Content("表单数据异常");
             }
             else
             {
-                return Content("表单数据异常");
+                return Content("用户名被占用");
             }
         }
 
@@ -97,17 +100,17 @@ namespace LuckDraw.Controllers
         }
 
         [HttpPost]
-        public IActionResult SentMail(string Account, string mail)
+        public IActionResult SendMail(string Account, string mail)
         {
             Random random = new Random();
-            code = random.Next(1000, 9999).ToString();
+            code = Security.MD5Encrypt16(random.Next(0, 9999).ToString()).Substring(random.Next(1, 9), 6).ToUpper();
             if (EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail) == null)
             {
                 return Content("邮箱或帐号错误");
             }
             else
             {
-                if (MailExt.SendMail(mail, "找回密码操作", $"您本次操作的验证码是 <span style='color:red;'>{ code }</span>，请注意谨防验证码泄露，保护账号安全！"))
+                if (MailExt.SendMail(mail, "找回密码操作", $"尊敬的用户 { Account }：<br />您正在进行<span style='color:red;'>找回密码</span>操作！<br />本次操作的验证码是：<span style='color:red;'>{ code }</span>。<br />请注意谨防验证码泄露，保护账号安全！"))
                     return Content("success");
                 else
                     return Content("邮件发送失败");

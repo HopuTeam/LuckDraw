@@ -79,7 +79,7 @@
                     Account: $("#Account").val(),
                     mail: $("#Email").val(),
                 };
-                $.post("/Sign/SentMail", data, function (res) {
+                $.post("/Sign/SendMail", data, function (res) {
                     setTimeout(function () {
                         layer.closeAll('loading');
                     }, 350);

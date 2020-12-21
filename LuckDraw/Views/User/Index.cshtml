@@ -23,7 +23,7 @@
         {
             <label>邮箱<span class="text-danger">(未验证)</span>:</label>
             <input type="text" class="form-control" value="@Model.Email">
-            <a href="/User/Auth" class="btn-outline-info">前往验证</a>
+            <a href="#Auth" class="btn-outline-info" id="authMail">前往验证</a>
         }
         else
         {
@@ -48,3 +48,23 @@
         <a class="btn btn-secondary" href="/Home/Index">返回</a>
     </div>
 </form>
+@section scripts{ 
+    <script>
+        $("#authMail").click(function () {
+            layer.load(2, { shade: false });
+            var data = {
+                Email: $("#Email").val(),
+            };
+            $.post("/User/SendMail", data, function (res) {
+                setTimeout(function () {
+                    layer.closeAll('loading');
+                }, 350);
+                if (res == "success") {
+                    layer.alert("验证邮件已发送至您的邮箱");
+                } else {
+                    layer.alert(res);
+                };
+            });
+        });
+    </script>
+}

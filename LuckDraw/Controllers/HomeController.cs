@@ -18,8 +18,12 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-            var sign = HttpContext.Session.GetModel<Sign>("User");
-            return View(EF.Signs.FirstOrDefault(x => x.ID == sign.ID));
+            var mod = (from s in EF.Signs
+                       join l in EF.Lucks on s.ID equals l.SignID
+                       join d in EF.Draws on s.ID equals d.SignID
+                       where s.Account == HttpContext.Session.GetModel<Sign>("User").Account
+                       select new { s, l, d }).FirstOrDefault();
+            return View(mod);
         }
     }
 }
