@@ -1,0 +1,48 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model LuckDraw.Models.Sign
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "个人信息";
+}
+<form>
+    <div class="form-group">
+        @if (Model.Identity == 0)
+        {
+            <label>账号<span class="text-success">(用户)</span>:</label>
+        }
+        else
+        {
+            <label>账号<span class="text-success">(管理员)</span>:</label>
+        }
+        <input type="text" class="form-control" disabled value="@Model.Account">
+    </div>
+    <div class="form-group">
+        @if (Model.Status == false)
+        {
+            <label>邮箱<span class="text-danger">(未验证)</span>:</label>
+            <input type="text" class="form-control" value="@Model.Email">
+            <a href="/User/Auth" class="btn-outline-info">前往验证</a>
+        }
+        else
+        {
+            <label>邮箱<span class="text-success">(验证通过)</span>:</label>
+            <input type="text" class="form-control" value="@Model.Email">
+        }
+    </div>
+    <div class="form-group">
+        <label>密码:</label>
+        <input type="password" class="form-control" placeholder="不修改密码无需填写">
+    </div>
+    <div class="form-group">
+        <label>确认密码:</label>
+        <input type="password" class="form-control" placeholder="不修改密码无需填写">
+    </div>
+    @*<div class="form-group">
+            <label>Password:</label>
+            <input type="password" class="form-control" id="Password" placeholder="如果不修改请留空">
+        </div>*@
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a class="btn btn-secondary" href="/Home/Index">返回</a>
+</form>
