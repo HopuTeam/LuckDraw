@@ -141,6 +141,7 @@ namespace LuckDraw.Controllers
         public IActionResult Two(int ID=1)//ID前端传Draws的id 直接调用
         {
 
+
             var list = EF.LuckDraws.Include("Draw").Include("Luck").Where(x=>x.DrawID==ID).ToList();
             var title = EF.Draws.FirstOrDefault(x => x.ID == ID);
             ViewData["tit"] = title;
@@ -149,8 +150,11 @@ namespace LuckDraw.Controllers
         public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
         {
             
+
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();
+            if (a == 0)
+                return Content("没了");
             string[] list = new string[a];
             int i = 0;
             foreach (var item in mod)
