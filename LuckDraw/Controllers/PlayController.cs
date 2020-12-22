@@ -63,6 +63,7 @@ namespace LuckDraw.Controllers
 
 
             List<KeyValuePair<int, int>> elements = new List<KeyValuePair<int, int>>();
+            //将查到的数据的id和权重填到elements中
             foreach (var item in model)
             {
                 elements.Add(new KeyValuePair<int, int>(item.id, item.Weigh));
@@ -70,22 +71,26 @@ namespace LuckDraw.Controllers
 
 
             Random ra = new Random();
-            //概率计算
+            //计算权限，最终结果加一
             int allRate = 1;
 
             foreach (var item in elements)
             {
                 allRate += item.Value;
             }
+            //记录抽到的id
             int luckid = 0;
            
             //在规定范围产生一个随机数
-            int diceRoll = ra.Next(0, allRate);
+            int diceRoll = ra.Next(1, allRate);
             int cumulative = 0;
+            //循环查到的数组的条目数，如果随机数生成的是2，那抽到的人肯定是数组里面的第二个
             for (int i = 0; i < elements.Count; i++)
             {
+                //循环一遍就加一遍权重值，就是例如第一个人的权重是1，当前cumulative=1，第二个人权重是3，当前权重=1+3=4
                 cumulative += elements[i].Value;
 
+                //如果随机数小于等于当前权重，就是抽到这个人。例如本次随机数是3，第一次 (diceRoll<= cumulative)  => (3<=1),不成立进入下一次  。第二次cumulative=4，随机数3<=4，那抽到的就是数组中的第二个
                 if (diceRoll <= cumulative)
                 {
                     luckid = elements[i].Key;

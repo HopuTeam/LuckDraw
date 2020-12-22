@@ -34,7 +34,7 @@
                         <p class="bg-success" style="padding:8px 15px;border-radius:5px;">@item.OptionName</p>
                         <span>项目包含总奖项数量：@item.LuckCount</span>
                         <hr />
-                        @if (item.OptionID == 1)
+                        @if (item.OptionID == 2)
                         {
                             <a href="/play/repeat?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
                             <a href="/setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
