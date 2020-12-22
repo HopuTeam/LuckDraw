@@ -1,25 +1,33 @@
 ﻿@model List<LuckDraw.Models.Luck>
 @{
-    ViewData["Title"] = "奖项设置";
+    ViewData["Title"] = "奖项管理";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>奖项设置</h2>
+<h2>奖项管理</h2>
+<hr />
+<button class="btn btn-light" style="margin:5px;">添加抽奖组</button>
 @foreach (var x in Model)
 {
     if (x.ParentID == 0)
     {
+        <hr />
         <div class="card">
-            <div class="card-header">抽奖组:@x.Name</div>
+            <div class="card-header">
+                @x.Name
+                <button class="btn btn-sm btn-warning" style="margin:5px;">修改</button>
+                <button class="btn btn-sm btn-danger" style="margin:5px;">删除</button>
+            </div>
             <div class="card-body">
                 @foreach (var i in Model)
                 {
                     if (i.ParentID == x.ID)
                     {
-                        <button class="btn btn-primary" style="margin:5px;">@i.Name</button>
+                        <div class="btn btn-primary" style="margin:5px;">@i.Name<div>&nbsp;<i class="fas fa-edit"></i></div><div>&nbsp;<i class="fas fa-recycle"></i></div></div>
                     }
                 }
+                <button class="btn btn-light" style="margin:5px;">添加抽奖项&nbsp;<i class="fas fa-plus-circle"></i></button>
             </div>
-            <div class="card-footer">底部</div>
+            @*<div class="card-footer"></div>*@
         </div>
     }
 }
