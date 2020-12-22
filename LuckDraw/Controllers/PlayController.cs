@@ -47,9 +47,6 @@ namespace LuckDraw.Controllers
         public IActionResult One(int Drawid)
         {
             var User = HttpContext.Session.GetModel<Sign>("User");
-
-
-
             var model = (from luckdraw in EF.LuckDraws
                          where luckdraw.DrawID == Drawid
                          join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
@@ -60,30 +57,24 @@ namespace LuckDraw.Controllers
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
-
-
             List<KeyValuePair<int, int>> elements = new List<KeyValuePair<int, int>>();
             //将查到的数据的id和权重填到elements中
             foreach (var item in model)
             {
                 elements.Add(new KeyValuePair<int, int>(item.id, item.Weigh));
             }
-
-
             Random ra = new Random();
             //计算权限，最终结果加一
             int allRate = 1;
-
             foreach (var item in elements)
             {
                 allRate += item.Value;
             }
             //记录抽到的id
             int luckid = 0;
-           
-            //在规定范围产生一个随机数
+            //在规定范围产生一个随机数 
             int diceRoll = ra.Next(1, allRate);
-            int cumulative = 0;
+            int cumulative =0;
             //循环查到的数组的条目数，如果随机数生成的是2，那抽到的人肯定是数组里面的第二个
             for (int i = 0; i < elements.Count; i++)
             {
@@ -94,7 +85,6 @@ namespace LuckDraw.Controllers
                 if (diceRoll <= cumulative)
                 {
                     luckid = elements[i].Key;
-
                     break;
                 }
             }
