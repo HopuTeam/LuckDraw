@@ -11,11 +11,14 @@
 <form id="submit">
     <div class="form-group">
         <label>名称</label>
-        <input type="text" class="form-control" id="Name">
+        <input type="text" required class="form-control" id="Name">
     </div>
     <div class="form-group">
         <label>类型:</label>
-        <input type="text" class="form-control" id="Option">
+        <select class="form-control" required id="OptionID">
+            <option value="1">抽奖后排除</option>
+            <option value="2">可重复抽奖</option>
+        </select>
     </div>
     <div class="btn-group">
         <button type="submit" onclick="add()" class="btn btn-primary">添加项目</button>
@@ -27,22 +30,30 @@
     <div class="row">
         @foreach (var item in Model)
         {
-            <div class="col-md-6">
-                <div class="panel panel-success">
-                    <div class="panel-heading">@item.DrawName <span class="glyphicon glyphicon-remove" style="float: right;" onclick="del(141)"></span></div>
-                    <div class="panel-body">
-                        <p class="bg-success" style="padding:8px 15px;border-radius:5px;">@item.OptionName</p>
-                        <span>项目包含总奖项数量：@item.LuckCount</span>
-                        <hr />
+            <div class="col-md-6" style="margin-bottom: 10px;">
+                <div class="card">
+                    <div class="card-header">@item.DrawName <i class="fas fa-trash" style="float: right;" onclick="del(@item.LuckdrawDrawID)"></i></div>
+                    <div class="card-body">
                         @if (item.OptionID == 2)
                         {
-                            <a href="/play/repeat?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="/setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
+                            <p class="bg-danger" style="padding: 8px 15px;border-radius: 5px;color: white;">抽奖方式：@item.OptionName</p>
                         }
                         else
                         {
-                            <a href="/play/Two?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
+                            <p class="bg-warning" style="padding: 8px 15px;border-radius: 5px;">抽奖方式：@item.OptionName</p>
+                        }
+                        <hr />
+                        <p>项目包含奖项数量：@item.LuckCount</p>
+                        <hr />
+                        @if (item.OptionID == 2)
+                        {
+                            <a href="/Play/Repeat?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">奖项配置</a>
+                        }
+                        else
+                        {
+                            <a href="/Play/Two?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">奖项配置</a>
                         }
                     </div>
                 </div>
@@ -58,12 +69,11 @@
 
         function add() {
             var paras = {
-                LuckType: $('#LuckType').val(),
-                Name: $('#Name').val()
-            }
-            debugger
-            var win = layer.load();
-            $.post('/Draw/add', paras, (res) => {
+                LuckType: $('#OptionID').val(),
+                Name: $('#Name').val(),
+            };
+            layer.load();
+            $.post('/Draw/Add', paras, (res) => {
                 if (res > 0) {
                     layer.msg("添加成功");
 
@@ -73,8 +83,9 @@
                 setTimeout(function () {
                     layer.closeAll('loading');
                 }, 350);
-            })
-        }
+            });
+            return false;
+        };
 
         function del(id) {
             var paras = {
