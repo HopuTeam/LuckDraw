@@ -10,9 +10,9 @@
 <div class="card">
     <div class="card-body">
         <p>这是一个抽奖平台，你可以自定义你的抽奖项目进行抽奖</p>
-        <p>当前登录账户：<span class="text-primary"></span></p>
-        <p>你的项目数量：<span class="text-danger">null</span></p>
-        <p>你的奖项数量：<span class="text-danger">null</span></p>
+        <p>当前登录账户：<span id="user" class="text-primary"></span></p>
+        <p>你的项目数量：<span id="drawCount" class="text-danger">null</span></p>
+        <p>你的奖项数量：<span  id="luckCount" class="text-danger">null</span></p>
     </div>
 </div>
 <br />
@@ -37,7 +37,15 @@
         });
 
         function getdata() {
-
+            $.post('/home/UserView', {}, function (res) {
+                if (res != null) {
+                    $('#user').html(res.username);
+                    $('#drawCount').html(res.draw);
+                    $('#luckCount').html(res.luck);
+                } else {
+                    layui.msg("数据为空");
+                }
+            })
         }
     </script>
 
