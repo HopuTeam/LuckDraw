@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LuckDraw.Handles;
+using LuckDraw.Models;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,28 +10,31 @@ namespace LuckDraw.Controllers
 {
     public class LuckController : Controller
     {
-        public Models.CoreEntities EF { get; }
-
-        public LuckController(Models.CoreEntities EF)
+        private CoreEntities EF { get; }
+        public LuckController(CoreEntities _ef)
         {
-            this.EF = EF;
+            EF = _ef;
         }
+
         public IActionResult Index()
         {
-
-            var li = EF.Lucks.ToList();
-         
+            return View(EF.Lucks.Where(x => x.SignID == HttpContext.Session.GetModel<Sign>("User").ID).ToList());
+        }
+        
+        [HttpPost]
+        public IActionResult Add(Luck luck)
+        {
             return View();
         }
-      
+
+        [HttpPost]
         public IActionResult Edit()
         {
-            
-            
-
             EF.SaveChanges();
             return View("Luck/index");
         }
+
+        [HttpPost]
         public IActionResult Del(int id)
         {
             var model = EF.Lucks.FirstOrDefault(x => x.ID == id);
@@ -37,6 +42,5 @@ namespace LuckDraw.Controllers
             int num = EF.SaveChanges();
             return Redirect("Luck/index");
         }
-        
     }
 }

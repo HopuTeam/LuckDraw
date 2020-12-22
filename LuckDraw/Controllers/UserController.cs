@@ -25,7 +25,8 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult Edit(Sign sign)
         {
-            var mod = EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID);
+            var ID = HttpContext.Session.GetModel<Sign>("User").ID;
+            var mod = EF.Signs.FirstOrDefault(x => x.ID == ID);
             if (sign.Password == null)
             {
                 if (mod.Email == sign.Email)
@@ -33,8 +34,6 @@ namespace LuckDraw.Controllers
 
                 mod.Email = sign.Email;
                 mod.Status = false;
-                EF.SaveChanges();
-                return Content("success");
             }
             else
             {
@@ -44,9 +43,12 @@ namespace LuckDraw.Controllers
                     mod.Status = false;
                 }
                 mod.Password = Security.MD5Encrypt32(sign.Password);
-                EF.SaveChanges();
-                return Content("success");
             }
+            if (EF.SaveChanges() <= 0)
+                return Content("数据更新异常");
+
+            HttpContext.Session.SetModel("User", EF.Signs.FirstOrDefault(x => x.ID == ID));
+            return Content("success");
         }
 
         [HttpPost]
@@ -86,7 +88,7 @@ namespace LuckDraw.Controllers
             if (EF.Signs.FirstOrDefault(x => x.Email == mod.Email) == null)
                 return Content("邮箱验证错误");
 
-            if (MailExt.SendMail(mod.Email, "账户验证操作", $"尊敬的用户 { mod.Account }：<br />您正在进行<span style='color:skyblue;'>账户认证</span>操作！<br />请点击[<a href='https://localhost:44318/User/Auth?Code={ HttpContext.Session.GetString("Code") }&Account={ mod.Account }&Email={ mod.Email }'>本链接</a>]进行认证。<br />请注意谨防验证码泄露，保护账号安全！"))
+            if (MailExt.SendMail(mod.Email, "账户验证操作", $"尊敬的用户 { mod.Account }：<br />您正在进行<span style='color:skyblue;'>账户认证</span>操作！<br />请点击[<a href='https://localhost:44318/User/Auth?Code={ HttpContext.Session.GetString("Code") }&Account={ mod.Account }&Email={ mod.Email }&AC={ DateTime.Now }'>本链接</a>]进行认证。<br />请注意谨防验证码泄露，保护账号安全！"))
                 return Content("success");
             else
                 return Content("邮件发送失败");

@@ -26,7 +26,7 @@ namespace LuckDraw.Models
                 // 抽奖项信息
                 context.Lucks.Add(new Luck()
                 {
-                    Name = "测试抽奖组",
+                    Name = "测试抽奖组1",
                     Description = "测试抽奖组描述",
                     Weigh = 0,
                     SignID = 1,
@@ -34,7 +34,7 @@ namespace LuckDraw.Models
                 });
                 context.Lucks.Add(new Luck()
                 {
-                    Name = "测试抽奖项",
+                    Name = "测试抽奖项1",
                     Description = "测试抽奖项描述",
                     Weigh = 1,
                     SignID = 1,
@@ -42,7 +42,7 @@ namespace LuckDraw.Models
                 });
                 context.Lucks.Add(new Luck()
                 {
-                    Name = "测试抽奖项",
+                    Name = "测试抽奖项2",
                     Description = "测试抽奖项描述",
                     Weigh = 1,
                     SignID = 1,

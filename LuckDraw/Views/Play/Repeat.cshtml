@@ -7,28 +7,24 @@
 <h2>@Model.Drawname</h2>
 <hr />
 
-<div class="container">
-    <div>
-        <div class="row" style="margin-top:20px;">
-            <div class="col-md-12 text-center" style="min-height:200px;">
-                <input type="button" class="btn btn-danger" onclick="smoke()" value="抽取幸运观众" style="margin-top:80px;" />
-            </div>
-            <div class="col-md-12" style="display:none;">
-                <div class="luckdraw">
-                    <div class="luck-option">
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12">
-                <h3>抽奖项</h3>
-                <div id="content-body">
+<div>
+    <div class="row" style="margin-top:20px;">
+        <div class="col-md-12 text-center" style="min-height:200px;">
+            <input type="button" class="btn btn-danger" onclick="smoke()" value="抽取幸运观众" style="margin-top:80px;" />
+        </div>
+        <div class="col-md-12" style="display:none;">
+            <div class="luckdraw">
+                <div class="luck-option">
 
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <h3>抽奖项</h3>
+            <div id="content-body">
 
-
+            </div>
+        </div>
     </div>
 </div>
 
@@ -40,41 +36,27 @@
 
         function getdata() {
             var win = layer.load();
-            $.post('/play/GetOptions', {Drawid:@Model.Drawid}, (res) => {
+            $.post('/play/GetOptions', { Drawid:@Model.Drawid}, (res) => {
                 layer.close(win);
                 var content = '', divhtml = '';
                 for (item of res) {
                     //divhtml += `<div>${item.Name}</div>`;
                     content += `<button type="button" style="margin-top:10px;margin-right:10px;" class="btn btn-success">${item.name}（${item.cishu}）</button>`;
-                }
+                };
                 $('#content-body').html(content);
                 //$('.luck-option').html(divhtml);
-            })
-        }
-
+            });
+        };
 
         function smoke() {
-
-
-            $.post('/play/One', {Drawid:@Model.Drawid}, (res) => {
-
+            $.post('/play/One', { Drawid:@Model.Drawid}, (res) => {
                 if (res == "0") {
                     layer.alert(`抽奖项目为空`);
                 } else {
                     layer.alert(`本次抽取到的人是：${res}`);
                     getdata();
-                }
-
-
-            })
-        }
+                };
+            });
+        };
     </script>
 }
-
-
-
-
-
-
-
-

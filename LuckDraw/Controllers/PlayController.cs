@@ -20,9 +20,9 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-           
-                return View();
-            
+
+            return View();
+
         }
         public IActionResult Repeat(int LuckdrawDrawID)
         {
@@ -31,11 +31,13 @@ namespace LuckDraw.Controllers
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
                             select dr.Name).FirstOrDefault();
 
-            PlayViweModel view = new PlayViweModel();
-            view.Drawname = DrawName;
-            view.Drawid = LuckdrawDrawID;
+            PlayViweModel view = new PlayViweModel
+            {
+                Drawname = DrawName,
+                Drawid = LuckdrawDrawID
+            };
             return View(view);
-            
+
         }
 
         /// <summary>
@@ -43,63 +45,65 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <returns></returns>
         public IActionResult One(int Drawid)
-       {
-                var User = HttpContext.Session.GetModel<Sign>("User");
+        {
+            var User = HttpContext.Session.GetModel<Sign>("User");
 
-               
+
 
             var model = (from luckdraw in EF.LuckDraws
-                        where luckdraw.DrawID == Drawid
-                        join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
-                        where luck1.SignID == User.ID
-                        select new
-                        {
-                            name = luck1.Name,
-                            Weigh = luck1.Weigh
-                        }).ToList();
+                         where luckdraw.DrawID == Drawid
+                         join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
+                         where luck1.SignID == User.ID
+                         select new
+                         {
+                             name = luck1.Name,
+                             Weigh = luck1.Weigh
+                         }).ToList();
 
 
             List<KeyValuePair<string, int>> elements = new List<KeyValuePair<string, int>>();
-                foreach (var item in model)
+            foreach (var item in model)
+            {
+                elements.Add(new KeyValuePair<string, int>(item.name, item.Weigh));
+            }
+
+
+            Random ra = new Random();
+            //概率计算
+            int allRate = 1;
+
+            foreach (var item in elements)
+            {
+                allRate += item.Value;
+            }
+
+            string selectedElement = "";
+            //在规定范围产生一个随机数
+            int diceRoll = ra.Next(0, allRate);
+            int cumulative = 0;
+            for (int i = 0; i < elements.Count; i++)
+            {
+                cumulative += elements[i].Value;
+
+                if (diceRoll <= cumulative)
                 {
-                    elements.Add(new KeyValuePair<string, int>(item.name, item.Weigh));
+                    selectedElement = elements[i].Key;
+
+                    break;
                 }
-
-             
-                Random ra = new Random();
-                //概率计算
-                int allRate = 1;
-
-                foreach (var item in elements)
-                {
-                    allRate += item.Value;
-                }
-
-                string selectedElement = "";                                
-                        //在规定范围产生一个随机数
-                        int diceRoll = ra.Next(0, allRate);
-                        int cumulative = 0;
-                        for (int i = 0; i < elements.Count; i++)
-                        {
-                            cumulative += elements[i].Value;
-
-                            if (diceRoll <= cumulative)
-                            {
-                                selectedElement = elements[i].Key;
-
-                                break;
-                            }
-                        }
-                        //抽到的名字
-                        //ViewData["yi"] = selectedElement;               
+            }
+            //抽到的名字
+            //ViewData["yi"] = selectedElement;               
             Luck luck = EF.Lucks.Where(a => a.Name == selectedElement).FirstOrDefault();
             Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID).FirstOrDefault();
-            if (draw==null)
+            if (draw == null)
             {
-                Models.LuckDraw list = new Models.LuckDraw();
-                list.LuckID = luck.ID;
-                list.DrawID = 1;
-                list.Number = 1;
+                Models.LuckDraw list = new Models.LuckDraw
+                {
+                    LuckID = luck.ID,
+                    DrawID = 1,
+                    Number = 1
+                };
                 EF.LuckDraws.Add(list);
                 EF.SaveChanges();
             }
@@ -120,9 +124,9 @@ namespace LuckDraw.Controllers
         {
             var c = HttpContext.Session.GetModel<Sign>("User");
             var a = (from luckdrawdb in EF.LuckDraws
-                     where luckdrawdb.DrawID== Drawid
+                     where luckdrawdb.DrawID == Drawid
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
-                     where luck.SignID==c.ID
+                     where luck.SignID == c.ID
                      select new
                      {
                          name = luck.Name,
@@ -131,15 +135,8 @@ namespace LuckDraw.Controllers
 
             ).ToList();
 
-            
             return Json(a);
         }
-
-
-
-
-
-
 
         /// <summary>
         /// 不可重复
@@ -147,23 +144,20 @@ namespace LuckDraw.Controllers
         /// <param name="ID"></param>
         /// <returns></returns>
         /// 
-
-        public IActionResult Two() 
+        public IActionResult Two()
         {
             return View();
         }
 
-        public IActionResult Updata(int ID=1)//ID前端传Draws的id 直接调用
+        public IActionResult Updata(int ID = 1)//ID前端传Draws的id 直接调用
         {
-
-
             var list = (from LuckDraw in EF.LuckDraws
                         join Luck in EF.Lucks on LuckDraw.LuckID equals Luck.ID
                         join Draw in EF.Draws on LuckDraw.DrawID equals Draw.ID
                         where LuckDraw.DrawID == Draw.ID
                         select new
                         {
-                            ID=LuckDraw.ID,
+                            ID = LuckDraw.ID,
                             Name = Luck.Name,
                             Time = LuckDraw.EntryTime,
                         }).ToList();
@@ -179,12 +173,9 @@ namespace LuckDraw.Controllers
             //    }
             //}
             return Json(list);
-   
         }
         public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
         {
-            
-
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();
             if (a == 0)
@@ -201,14 +192,14 @@ namespace LuckDraw.Controllers
             string Name = list[index];//幸运观众的名字
             var luckID = (from x in EF.Lucks
                           join y in EF.LuckDraws on x.ID equals y.LuckID
-                          where x.Name==Name
+                          where x.Name == Name
                           select y.ID).FirstOrDefault();
-            var EideTime = EF.LuckDraws.FirstOrDefault(x=>x.ID==luckID);
+            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.ID == luckID);
             EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
             return Content($"抽奖成功,恭喜 { Name } 同学");
         }
-        
+
         //移除
         public IActionResult TwoEide(int id)
         {
@@ -217,13 +208,12 @@ namespace LuckDraw.Controllers
             {
                 mod.EntryTime = DateTime.Now;
             }
-            else {
+            else
+            {
                 mod.EntryTime = null;
             }
-                 EF.SaveChanges();
+            EF.SaveChanges();
             return Content("success");
         }
     }
 }
-
-

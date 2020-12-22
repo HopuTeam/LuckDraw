@@ -1,124 +1,30 @@
-﻿
+﻿@model List<LuckDraw.Models.Luck>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "奖项设置";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>奖项设置</h1>
-<div class="row" style="margin-top:20px;">
-    <div class="col-md-12">
-        <p class="ops-group" title="三等奖" data-toggle="tooltip" data-placement="top" style="background-color: skyblue;">
-            棒棒糖(数量：0)
-            &nbsp;&nbsp;
-            <span title="删除" class="glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="top" style="float:right;" onclick="del(1050,true)"></span>
-            <span title="编辑" class="glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="top" style="float:right;margin-right:10px;" onclick="{
-                }"></span>
-        </p>
-    </div>
-    <div class="col-md-12">
-        <button type="button" class="btn btn-default luck-btn" data-toggle="tooltip" data-placement="top" title="给本组添加一个新项" onclick="modal(1050,0)">添加新项</button>
-        <hr />
-    </div>
-    <div class="col-md-12">
-        <button type="button" class="btn btn-default luck-btn" data-toggle="tooltip" data-placement="top" title="添加一个新的组" onclick="modal(0,0)">添加新组</button>
-    </div>
-</div>
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">编辑数据</h4>
+<h2>奖项设置</h2>
+@foreach (var x in Model)
+{
+    if (x.ParentID == 0)
+    {
+        <div class="card">
+            <div class="card-header">抽奖组:@x.Name</div>
+            <div class="card-body">
+                @foreach (var i in Model)
+                {
+                    if (i.ParentID == x.ID)
+                    {
+                        <button class="btn btn-primary" style="margin:5px;">@i.Name</button>
+                    }
+                }
             </div>
-            <div class="modal-body">
-                <form action="/options/index" method="post">
-                    <input type="hidden" id="ID" name="ID" value="" />
-                    <input type="hidden" id="ParentID" name="ParentID" value="" />
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">名称</label>
-                        <input type="text" class="form-control" id="Name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="recipient-name" class="control-label">备注</label>
-                        <input type="text" class="form-control" id="Description">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
-            </div>
+            <div class="card-footer">底部</div>
         </div>
-    </div>
-</div>
+    }
+}
 @section scripts{
-
     <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
 
-        function modal(ParentID, ID) {
-            if (ParentID) {
-                $("#form-color").hide();
-            } else {
-                $("#form-color").show();
-            }
-            $("#Pid").val(ParentID);
-            $("#ID").val(ID);
-            $("#myModal").modal();
-        }
-
-        function edit() {
-            var paras = {
-                ID: $('#ID').val(),
-                ParentID: $('#ParentID').val(),
-                Description: $('#Description').val(),
-                Name: $('#Name').val(),
-
-            }
-            var win = layer.load();
-            $.post('/Luck/edit', paras, (res) => {
-                layer.close(win);
-                if (res.succ)
-                    window.location.reload();
-                else
-                    layer.msg(res.msg);
-            })
-        }
-
-        function del(ID, isgroup) {
-            if (isgroup) {
-                layer.confirm('确认删除组吗？<br><span class="text-danger">删除组将会导致组中所有项全部删除</span>', {
-                    btn: ['确定', '取消']
-                }, function () {
-                    submit_del(ID);
-                }, function () {
-
-                });
-            } else {
-                layer.confirm('确认此项吗？', {
-                    btn: ['确定', '取消']
-                }, function () {
-                    submit_del(ID);
-                }, function () {
-
-                });
-            }
-        }
-
-        function submit_del(ID) {
-            var paras = {
-                ID: ID
-            }
-            var win = layer.load();
-            $.post('/Luck/del', paras, (res) => {
-                layer.close(win);
-                if (res.succ)
-                    window.location.reload();
-                else
-                    layer.msg(res.msg);
-            })
-        }
     </script>
 }
