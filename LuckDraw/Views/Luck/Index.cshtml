@@ -18,7 +18,7 @@
                 {
                     if (i.ParentID == x.ID)
                     {
-                        <div title="@i.Description" class="btn btn-sm btn-primary" style="margin:5px;">@i.Name<span onclick="edit(@i.ID)">&nbsp;<i class="fas fa-edit"></i></span><span onclick="del(@i.ID)">&nbsp;<i class="fas fa-trash"></i></span></div>
+                        <div title="@i.Description" class="btn btn-sm btn-primary" style="margin:5px;">@(i.Name)(@i.Weigh)<span onclick="edit(@i.ID)">&nbsp;<i class="fas fa-edit"></i></span><span onclick="del(@i.ID)">&nbsp;<i class="fas fa-trash"></i></span></div>
                     }
                 }
                 <button onclick="add(@x.ID)" class="btn btn-sm btn-light" style="margin:5px;">添加抽奖项&nbsp;<i class="fas fa-plus-circle"></i></button>

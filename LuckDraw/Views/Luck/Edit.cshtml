@@ -45,7 +45,7 @@
             </div>
         }
         <div class="btn-group">
-            <button class="btn btn-primary" type="submit">添加</button>
+            <button class="btn btn-primary" type="submit">修改</button>
             <button class="btn btn-secondary" type="button" id="btnClose">取消</button>
         </div>
     </form>
@@ -66,7 +66,7 @@
                     layer.closeAll('loading');
                 }, 350);
                 if (res == "success") {
-                    layer.alert("添加成功");
+                    layer.alert("修改成功");
                     setTimeout(function () {
                         window.parent.closeFrame();
                     }, 1500);

@@ -18,7 +18,6 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-          
             return View();
         }
         [HttpPost]
@@ -31,14 +30,13 @@ namespace LuckDraw.Controllers
                        {
                            username = sign.Account,
                            luck = (from luck in EF.Lucks
-                                   where luck.SignID == sign.ID && luck.ParentID >= 0
-                                   select luck
-                                ).Count(),
+                                   where luck.SignID == sign.ID && luck.ParentID > 0
+                                   select luck).Count(),
                            draw = (from draw in EF.Draws
                                    where draw.SignID == sign.ID
-                                   select draw
-                           ).Count()
+                                   select draw).Count()
                        }).FirstOrDefault();
+
             var model = new
             {
                 //登录用户名字

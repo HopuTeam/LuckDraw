@@ -20,25 +20,20 @@ namespace LuckDraw.Controllers
         {
             var sid = HttpContext.Session.GetModel<Sign>("User").ID;
             var list = (from dr in EF.Draws
-                     where dr.SignID == sid
-                     join op in EF.Options on dr.OptionID equals op.ID    
-                     select new
-                     {
-                       
-                         drname = dr.Name,
-                         opname = op.Name,
-                         opid = op.ID,
-                         zongshu = (
-                        from lcda in EF.LuckDraws
-                        where lcda.DrawID == dr.ID
-                        select lcda.DrawID                        
-                        ).Count(),
-                        luckdrawDrawID=(
-                         from lcda in EF.LuckDraws
-                         where lcda.DrawID == dr.ID
-                         select lcda.DrawID
-                        ).FirstOrDefault()
-                     }).ToList();
+                        where dr.SignID == sid
+                        join op in EF.Options on dr.OptionID equals op.ID
+                        select new
+                        {
+                            drname = dr.Name,
+                            opname = op.Name,
+                            opid = op.ID,
+                            zongshu = (from lcda in EF.LuckDraws
+                                       where lcda.DrawID == dr.ID
+                                       select lcda.DrawID).Count(),
+                            luckdrawDrawID = (from lcda in EF.LuckDraws
+                                              where lcda.DrawID == dr.ID
+                                              select lcda.DrawID).FirstOrDefault()
+                        }).ToList();
 
             var res = new List<DrawViewModle>();
             foreach (var item in list)
@@ -49,17 +44,11 @@ namespace LuckDraw.Controllers
                     OptionName = item.opname,
                     OptionID = item.opid,
                     LuckCount = item.zongshu,
-                     LuckdrawDrawID=item.luckdrawDrawID
+                    LuckdrawDrawID = item.luckdrawDrawID
                 });
             }
-          
             return View(res);
-           
         }
-
-     
-    
-
 
         public IActionResult Add(string LuckType, string Name)
         {
@@ -96,20 +85,5 @@ namespace LuckDraw.Controllers
 
             return Json(cishu);
         }
-
-
-
-
-        // 启用codefirst迁移    enable-migrations
-        // 添加一个迁移文件      add-migration [name]     -- add-migration one
-        // 更新数据库           update-database
-
-
-
-
-
-
-
-
     }
 }
