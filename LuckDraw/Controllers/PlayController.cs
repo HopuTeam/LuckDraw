@@ -180,15 +180,19 @@ namespace LuckDraw.Controllers
             var a = mod.Count();
             if (a == 0)
                 return Content("没了");
-            string[] list = new string[a];
-            int i = 0;
+            string[] list = new string[200];
+            int z= 0;
             foreach (var item in mod)
             {
                 var Dmod = EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID);
-                list[i] = Dmod.Name;
-                i++;
+                for (int i = 0; i < Dmod.Weigh; i++)
+                {
+                    list[z] = Dmod.Name;
+                    z++;
+                }
+             
             }
-            int index = new Random().Next(0, i);
+            int index = new Random().Next(0, z);
             string Name = list[index];//幸运观众的名字
             var luckID = (from x in EF.Lucks
                           join y in EF.LuckDraws on x.ID equals y.LuckID
