@@ -53,7 +53,7 @@ namespace LuckDraw.Controllers
                          where luck1.SignID == User.ID
                          select new
                          {
-                             id =luck1.ID,
+                             id = luck1.ID,
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
@@ -74,7 +74,7 @@ namespace LuckDraw.Controllers
             int luckid = 0;
             //在规定范围产生一个随机数 
             int diceRoll = ra.Next(1, allRate);
-            int cumulative =0;
+            int cumulative = 0;
             //循环查到的数组的条目数，如果随机数生成的是2，那抽到的人肯定是数组里面的第二个
             for (int i = 0; i < elements.Count; i++)
             {
@@ -88,9 +88,9 @@ namespace LuckDraw.Controllers
                     break;
                 }
             }
-            
-                    
-            Luck luck = EF.Lucks.Where(a => a.ID==luckid).FirstOrDefault();
+
+
+            Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();
             //抽到的名字
             string selectedElement = luck.Name;
             //添加抽中的次数
@@ -143,10 +143,9 @@ namespace LuckDraw.Controllers
         /// <param name="ID"></param>
         /// <returns></returns>
         /// 
-        public IActionResult Two(int id=2)
+        public IActionResult Two(int ID = 2)
         {
-            var mod = EF.Draws.FirstOrDefault();
-            return View(mod);
+            return View(EF.Draws.FirstOrDefault(x => x.ID == ID));
         }
 
         public IActionResult Updata(int ID)//ID前端传Draws的id 直接调用
@@ -159,7 +158,7 @@ namespace LuckDraw.Controllers
                         {
                             ID = LuckDraw.ID,
                             Name = Luck.Name,
-                            Time = LuckDraw.EntryTime,
+                            Time = LuckDraw.EntryTime.ToString().Substring(0, 19),
                         }).ToList();
             //foreach (var item in list)
             //{
@@ -181,7 +180,7 @@ namespace LuckDraw.Controllers
             if (a == 0)
                 return Content("没了");
             string[] list = new string[200];
-            int z= 0;
+            int z = 0;
             foreach (var item in mod)
             {
                 var Dmod = EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID);
@@ -190,7 +189,7 @@ namespace LuckDraw.Controllers
                     list[z] = Dmod.Name;
                     z++;
                 }
-             
+
             }
             int index = new Random().Next(0, z);
             string Name = list[index];//幸运观众的名字

@@ -34,13 +34,13 @@
                     //判断时间是否为空
                     //debugger
                     if (item.time == null) {
-                        content1 += `<button class="btn btn-light" onclick="ID(${item.id})">${item.name}</button>`;  //待抽奖项
+                        content1 += `<div class="btn btn-light" onclick="ID(${item.id})">${item.name}</div>`;  //待抽奖项
                     }
      
                       //  console.log(content1);
                     if (item.time != null)
                     {
-                        content2 += `<button class="btn btn-danger" onclick="ID(${item.id})">${item.name}${item.time}</button>`;
+                        content2 += `<div class="btn btn-danger" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
                         console.log(item.time);
                         //抽到奖项
                     }
