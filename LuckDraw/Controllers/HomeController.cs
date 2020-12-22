@@ -18,6 +18,12 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
+          
+            return View();
+        }
+        [HttpPost]
+        public IActionResult UserView()
+        {
             var User = HttpContext.Session.GetModel<Sign>("User");
             var mod = (from sign in EF.Signs
                        where sign.ID == User.ID
@@ -33,14 +39,17 @@ namespace LuckDraw.Controllers
                                    select draw
                            ).Count()
                        }).FirstOrDefault();
+            var model = new
+            {
+                //登录用户名字
+                username = mod.username,
+                //奖项的数量
+                luck = mod.luck,
+                //项目的数量
+                draw = mod.draw
+            };
 
-            return View();
-        }
-        [HttpPost]
-        public IActionResult UserView()
-        {
-   
-            return View();
+            return Json(model);
         }
 
     }
