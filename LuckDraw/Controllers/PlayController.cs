@@ -148,12 +148,13 @@ namespace LuckDraw.Controllers
         /// <param name="ID"></param>
         /// <returns></returns>
         /// 
-        public IActionResult Two()
+        public IActionResult Two(int id=2)
         {
-            return View();
+            var mod = EF.Draws.FirstOrDefault();
+            return View(mod);
         }
 
-        public IActionResult Updata(int ID = 1)//ID前端传Draws的id 直接调用
+        public IActionResult Updata(int ID)//ID前端传Draws的id 直接调用
         {
             var list = (from LuckDraw in EF.LuckDraws
                         join Luck in EF.Lucks on LuckDraw.LuckID equals Luck.ID
@@ -178,7 +179,7 @@ namespace LuckDraw.Controllers
             //}
             return Json(list);
         }
-        public IActionResult NonLucky(int ID = 1)//ID前端传Draws的id
+        public IActionResult NonLucky(int ID)
         {
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
             var a = mod.Count();

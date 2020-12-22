@@ -1,10 +1,21 @@
-﻿
+﻿@model LuckDraw.Models.Draw
 @{
     ViewData["Title"] = "Two";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<h2>@Model.Name</h2>
+<hr />
+<div>
+    <h3>待抽奖项</h3>
+    <div id="div1">
+ 
+    </div>
+    <button type="button"  class="btn btn-link" id="chou">抽取幸运观众</button>
+    <div id="div1">
 
-<h1>Two</h1>
+    </div>
+</div>
+
 @section scripts{
     <script>
         $(document).ready(function () {
@@ -14,19 +25,41 @@
         function getdata() {
             var win = layer.load();
 
-            $.post("/play/Updata", {}, function (res) {
+            $.post("/play/Updata", {ID : @Model.ID}, function (res) {
                 layer.close(win);
+                var content1 = "";
+                var content2= "";
+                var Addhtml = "";
                 for (item of res) {
+                    //判断时间是否为空
+                    //debugger
                     if (item.Time == null) {
-                        console.log(item.id + item.name + item.time);
+                        content1 += `<button class="btn btn-light" onclick="ID(${item.id})">${item.name}</button>`   //待抽奖项
                     } else {
-                        console.log("time不为空");
+                        content2 += `<button class="btn btn-danger" onclick="ID(${item.id})">${item.name}<br>${item.time}</button>`   //抽到奖项
                     }
-                }
+                };
+                $('#div1').append(content1);  //待抽奖项
+                $('#div1').append(content2);//抽到奖项
             })
         }
-
-
+        debugger
+        //choujiang
+        $("#chou").click(function () {
+            $.post("/play/NonLucky", {ID : @Model.ID}, function (res) {
+                alert(res);
+                getdata();//刷新页面
+            })
+        });
+        //移除
+        function ID(id) {
+            var data = {
+                ID: id,
+            };
+            $.get("/Play/TwoEide", data, function (res) {
+                alert(res);
+                getdata();//刷新页面
+            })
+        }
     </script>
-
     }
