@@ -2,19 +2,27 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/LuckDraw",
-      "sslPort": 0
-    },
     "iisExpress": {
       "applicationUrl": "http://localhost:53648",
       "sslPort": 44318
     }
   },
   "profiles": {
-    "LuckDraw": {
+    "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true
+      "launchBrowser": true,
+      "launchUrl": "home",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "LuckDraw": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "home",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }
