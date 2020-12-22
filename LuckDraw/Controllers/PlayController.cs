@@ -56,15 +56,16 @@ namespace LuckDraw.Controllers
                          where luck1.SignID == User.ID
                          select new
                          {
+                             id =luck1.ID,
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
 
 
-            List<KeyValuePair<string, int>> elements = new List<KeyValuePair<string, int>>();
+            List<KeyValuePair<int, int>> elements = new List<KeyValuePair<int, int>>();
             foreach (var item in model)
             {
-                elements.Add(new KeyValuePair<string, int>(item.name, item.Weigh));
+                elements.Add(new KeyValuePair<int, int>(item.id, item.Weigh));
             }
 
 
@@ -76,8 +77,8 @@ namespace LuckDraw.Controllers
             {
                 allRate += item.Value;
             }
-
-            string selectedElement = "";
+            int luckid = 0;
+           
             //在规定范围产生一个随机数
             int diceRoll = ra.Next(0, allRate);
             int cumulative = 0;
@@ -87,14 +88,17 @@ namespace LuckDraw.Controllers
 
                 if (diceRoll <= cumulative)
                 {
-                    selectedElement = elements[i].Key;
+                    luckid = elements[i].Key;
 
                     break;
                 }
             }
+            
+                    
+            Luck luck = EF.Lucks.Where(a => a.ID==luckid).FirstOrDefault();
             //抽到的名字
-            //ViewData["yi"] = selectedElement;               
-            Luck luck = EF.Lucks.Where(a => a.Name == selectedElement).FirstOrDefault();
+            string selectedElement = luck.Name;
+            //添加抽中的次数
             Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID).FirstOrDefault();
             if (draw == null)
             {

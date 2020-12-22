@@ -18,13 +18,30 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-            var mod = (from s in EF.Signs
-                       join l in EF.Lucks on s.ID equals l.SignID
-                       join d in EF.Draws on s.ID equals d.SignID
-                       where s.Account == HttpContext.Session.GetModel<Sign>("User").Account
-                       select new { s, l, d }).FirstOrDefault();
+            var User = HttpContext.Session.GetModel<Sign>("User");
+            var mod = (from sign in EF.Signs
+                       where sign.ID == User.ID
+                       select new
+                       {
+                           username = sign.Account,
+                           luck = (from luck in EF.Lucks
+                                   where luck.SignID == sign.ID && luck.ParentID >= 0
+                                   select luck
+                                ).Count(),
+                           draw = (from draw in EF.Draws
+                                   where draw.SignID == sign.ID
+                                   select draw
+                           ).Count()
+                       }).FirstOrDefault();
 
-            return View(mod);
+            return View();
         }
+        [HttpPost]
+        public IActionResult UserView()
+        {
+   
+            return View();
+        }
+
     }
 }
