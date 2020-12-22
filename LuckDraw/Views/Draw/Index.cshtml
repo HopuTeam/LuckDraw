@@ -88,23 +88,21 @@
         };
 
         function del(id) {
-            var paras = {
-                id: id
-            }
+            //var paras = {
+            //    id: id
+            //}
             layer.confirm('确认删除此项目吗？', {
                 btn: ['确定', '取消']
             }, function () {
                 var win = layer.load();
-                $.post('/luck/del', paras, (res) => {
+                $.post('/Draw/Delete', { ID: id }, (res) => {
                     layer.close(win);
-                    if (res.succ)
+                    if (res = "success")
                         window.location.reload();
                     else
                         layer.msg(res.msg);
-                })
-            }, function () {
-
+                });
             });
-        }
+        };
     </script>
 }

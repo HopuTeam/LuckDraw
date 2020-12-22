@@ -85,5 +85,21 @@ namespace LuckDraw.Controllers
 
             return Json(cishu);
         }
+
+        [HttpPost]
+        public IActionResult Delete(int ID)
+        {
+            var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
+            var info = EF.LuckDraws.Where(x => x.DrawID == mod.ID);
+            if (info.ToList().Count() > 0)
+                foreach (var item in info)
+                    EF.Remove(item);
+
+            EF.Remove(mod);
+            if (EF.SaveChanges() > 0)
+                return Content("success");
+            else
+                return Content("删除失败");
+        }
     }
 }
