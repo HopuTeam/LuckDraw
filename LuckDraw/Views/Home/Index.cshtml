@@ -6,48 +6,49 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "主页";
 }
-<h3>欢迎使用抽奖</h3>
 <div class="card">
     <div class="card-body">
+        <h3>欢迎使用抽奖</h3>
         <p>这是一个抽奖平台，你可以自定义你的抽奖项目进行抽奖</p>
-        <p>当前登录账户：<span id="user" class="text-primary"></span></p>
-        <p>你的项目数量：<span id="drawCount" class="text-danger">null</span></p>
-        <p>你的奖项数量：<span  id="luckCount" class="text-danger">null</span></p>
+        <p>当前登录账户：<span id="userName" class="text-primary">{userName}</span></p>
+        <p>你的项目数量：<span id="drawCount" class="text-danger">{drawCount}</span></p>
+        <p>你的奖项数量：<span id="luckCount" class="text-warning">{luckCount}</span></p>
     </div>
 </div>
-<br />
-<h3>使用说明</h3>
+<hr />
 <div class="card">
     <div class="card-body">
-        <p>没什么好说的</p>
+        <h3>使用说明</h3>
+        <p>1、点击奖项管理添加你所需要的所有奖项</p>
+        <p>2、点击抽奖项目添加一个新的抽奖项目</p>
+        <ul>
+            <li>抽奖项目有两种模式：</li>
+            <li>2.1、每次抽取完成后排除奖项（每次抽取一个奖项后将抽到的奖项从奖池中排除）</li>
+            <li>2.2、重复利用奖项抽取（可以重复抽取奖项，不会排除）</li>
+        </ul>
+        <p>3、点击抽奖项目中的奖项配置，可以选择本抽奖项目中的奖池奖项</p>
+        <p>4、配置完成后点击抽奖项目中的开始抽奖，将会根据不同的项目进行不同的抽奖处理</p>
     </div>
 </div>
-<br />
-<h3>关于</h3>
+<hr />
 <div class="card">
     <div class="card-body">
+        <h3>关于</h3>
         <p>没什么好说的</p>
     </div>
 </div>
 @section scripts{
-
     <script>
         $(document).ready(function () {
-            getdata();
-        });
-
-        function getdata() {
-            $.post('/home/UserView', {}, function (res) {
+            $.post('/Home/GetInfo', {}, function (res) {
                 if (res != null) {
-                    $('#user').html(res.username);
-                    $('#drawCount').html(res.draw);
-                    $('#luckCount').html(res.luck);
+                    $('#userName').html(res.userName);
+                    $('#drawCount').html(res.drawCount);
+                    $('#luckCount').html(res.luckCount);
                 } else {
                     layui.msg("数据为空");
-                }
-            })
-        }
+                };
+            });
+        });
     </script>
-
-
 }

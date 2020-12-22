@@ -4,46 +4,25 @@
     ViewData["Title"] = "抽奖项目";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>抽抽奖</h2>
+<h2>抽奖项目</h2>
 <hr />
-<div class="row" style="margin-top:20px;">
-    <div class="col-md-4">
-        <form action="/luck/index" method="post">
-            <input name="__RequestVerificationToken" type="hidden" value="" />
-            <div class="form-horizontal">
-                <h4 onclick="{ $('#add-form').slideToggle(250); }" style="cursor:pointer;color:rgb(71, 71, 183);">点击这里添加抽奖项目</h4>
-                <hr />
-                <div id="add-form" style="display:none;">
-                    <div class="form-group">
-                        <label>名称</label>
-                        <div class="col-md-10">
-                            <input class="form-control text-box single-line" data-val="true" id="Name" name="Name" type="text" value="" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>类型</label>
-                        <div class="col-md-10">
-                            <select class="form-control" id="LuckType" name="LuckType">
-                                <option value="1">重复利用奖项抽取</option>
-                                <option value="2">每次抽取完成后排除奖项</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-md-offset-2 col-md-10">
-                            <input type="button" value="添加项目" onclick="add()" class="btn btn-default" />
-                            <input type="button" value="取消" onclick="{ $('#add-form').slideToggle(250); }" class="btn btn-default" />
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-            </div>
-        </form>
+<button class="btn btn-info" onclick="{ $('#submit').slideToggle(250); }">添加抽奖项目</button>
+<hr />
+<form id="submit">
+    <div class="form-group">
+        <label>名称</label>
+        <input type="text" class="form-control" id="Name">
     </div>
-</div>
-
+    <div class="form-group">
+        <label>类型:</label>
+        <input type="text" class="form-control" id="Option">
+    </div>
+    <div class="btn-group">
+        <button type="submit" onclick="add()" class="btn btn-primary">添加项目</button>
+        <button type="button" onclick="{ $('#submit').slideToggle(250); }" class="btn btn-secondary">取消</button>
+    </div>
+    <hr />
+</form>
 <div class="col-md-12">
     <div class="row">
         @foreach (var item in Model)
@@ -65,32 +44,16 @@
                             <a href="/play/Two?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
                             <a href="setoptions/@item.LuckdrawDrawID" class="btn btn-success">奖项配置</a>
                         }
-
                     </div>
                 </div>
             </div>
         }
-
-
-
-
-
     </div>
 </div>
-
-
-
-
-
-
-
-
-
 @section scripts{
-
     <script>
         $(document).ready(function () {
-           
+            $('#submit').slideToggle(250);
         });
 
         function add() {
@@ -132,7 +95,5 @@
 
             });
         }
-
-       
     </script>
 }

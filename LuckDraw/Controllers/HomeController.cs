@@ -20,12 +20,12 @@ namespace LuckDraw.Controllers
         {
             return View();
         }
+
         [HttpPost]
-        public IActionResult UserView()
+        public IActionResult GetInfo()
         {
-            var User = HttpContext.Session.GetModel<Sign>("User");
             var mod = (from sign in EF.Signs
-                       where sign.ID == User.ID
+                       where sign.ID == HttpContext.Session.GetModel<Sign>("User").ID
                        select new
                        {
                            username = sign.Account,
@@ -40,15 +40,13 @@ namespace LuckDraw.Controllers
             var model = new
             {
                 //登录用户名字
-                username = mod.username,
+                userName = mod.username,
                 //奖项的数量
-                luck = mod.luck,
+                drawCount = mod.luck,
                 //项目的数量
-                draw = mod.draw
+                luckCount = mod.draw
             };
-
             return Json(model);
         }
-
     }
 }
