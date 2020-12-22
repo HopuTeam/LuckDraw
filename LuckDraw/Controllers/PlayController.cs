@@ -100,7 +100,7 @@ namespace LuckDraw.Controllers
                 Models.LuckDraw list = new Models.LuckDraw
                 {
                     LuckID = luck.ID,
-                    DrawID = 1,
+                    DrawID = Drawid,
                     Number = 1
                 };
                 EF.LuckDraws.Add(list);
