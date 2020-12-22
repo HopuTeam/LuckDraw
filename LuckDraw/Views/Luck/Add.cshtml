@@ -1,0 +1,85 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model int
+@{
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/layui/css/layui.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 20px;
+        }
+
+        .demo-carousel {
+            height: 200px;
+            line-height: 200px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <form id="submit">
+        <input type="hidden" id="ParentID" value="@Model">
+        <div class="form-group">
+            <label>名称:</label>
+            <input type="text" required class="form-control" id="Name">
+        </div>
+        <div class="form-group">
+            <label>描述:</label>
+            <input type="text" required class="form-control" id="Description">
+        </div>
+        @if (Model == 0)
+        {
+            <input type="hidden" id="Weigh" value="0">
+        }
+        else
+        {
+            <div class="form-group">
+                <label>权重:</label>
+                <input type="number" required class="form-control" id="Weigh" title="值越大抽中的概率越高" value="1" min="1" max="10">
+            </div>
+        }
+        <div class="btn-group">
+            <button class="btn btn-primary" type="submit">添加</button>
+            <button class="btn btn-secondary" type="button" id="btnClose">取消</button>
+        </div>
+    </form>
+    <script src="~/Scripts/jquery-3.5.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/Content/layui/layui.all.js"></script>
+    <script>
+        $("#submit").submit(function () {
+            layer.load(2, { shade: false });
+            var data = {
+                Name: $("#Name").val(),
+                Description: $("#Description").val(),
+                Weigh: $("#Weigh").val(),
+                ParentID: $("#ParentID").val(),
+            };
+            $.post("/Luck/Add", data, function (res) {
+                setTimeout(function () {
+                    layer.closeAll('loading');
+                }, 350);
+                if (res == "success") {
+                    layer.alert("添加成功");
+                    setTimeout(function () {
+                        window.parent.closeFrame();
+                    }, 1500);
+                } else {
+                    layer.alert(res);
+                };
+            });
+            return false;
+        });
+
+        $("#btnClose").click(function () {
+            window.parent.closeFrame();
+        });
+    </script>
+</body>
+</html>

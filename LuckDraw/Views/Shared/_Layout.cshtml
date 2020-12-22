@@ -59,9 +59,6 @@
                 btn: ['确定', '取消']
             }, function () {
                 $.post("/User/Logout", function (res) {
-                    setTimeout(function () {
-                        layer.closeAll('loading');
-                    }, 300);
                     if (res == "success") {
                         layer.alert("您已退出账户！");
                         setTimeout(function () {
@@ -72,9 +69,10 @@
                     };
                 });
             });
+            setTimeout(function () {
+                layer.closeAll('loading');
+            }, 300);
         });
-     
-      
     </script>
     @RenderSection("scripts", false)
 </body>

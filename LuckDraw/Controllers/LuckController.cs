@@ -20,27 +20,58 @@ namespace LuckDraw.Controllers
         {
             return View(EF.Lucks.Where(x => x.SignID == HttpContext.Session.GetModel<Sign>("User").ID).ToList());
         }
-        
+
+        [HttpGet]
+        public IActionResult Add(int ParentID)
+        {
+            return View(ParentID);
+        }
         [HttpPost]
         public IActionResult Add(Luck luck)
         {
-            return View();
+            luck.SignID = HttpContext.Session.GetModel<Sign>("User").ID;
+            EF.Lucks.Add(luck);
+            if (EF.SaveChanges() > 0)
+                return Content("success");
+            else
+                return Content("添加失败");
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int ID)
+        {
+            return View(EF.Lucks.FirstOrDefault(x => x.ID == ID));
+        }
+        [HttpPost]
+        public IActionResult Edit(Luck luck)
+        {
+            var mod = EF.Lucks.FirstOrDefault(x => x.ID == luck.ID && x.SignID == HttpContext.Session.GetModel<Sign>("User").ID);
+            if (mod == null)
+                return Content("数据请求异常");
+            mod.Name = luck.Name;
+            mod.Description = luck.Description;
+            mod.Weigh = luck.Weigh;
+
+            if (EF.SaveChanges() > 0)
+                return Content("success");
+            else
+                return Content("没有进行任何更改");
         }
 
         [HttpPost]
-        public IActionResult Edit()
+        public IActionResult Delete(int ID)
         {
-            EF.SaveChanges();
-            return View("Luck/index");
-        }
+            var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
+            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
+            if (info.ToList().Count() > 0)
+                foreach (var item in info)
+                    EF.Lucks.Remove(item);
 
-        [HttpPost]
-        public IActionResult Del(int id)
-        {
-            var model = EF.Lucks.FirstOrDefault(x => x.ID == id);
-            EF.Lucks.Remove(model);
-            int num = EF.SaveChanges();
-            return Redirect("Luck/index");
+            EF.Remove(mod);
+            if (EF.SaveChanges() > 0)
+                return Content("success");
+            else
+                return Content("删除失败");
         }
     }
 }
