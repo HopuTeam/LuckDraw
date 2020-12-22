@@ -10,11 +10,11 @@
 <hr />
 <form id="submit">
     <div class="form-group">
-        <label>名称</label>
+        <label>名称：</label>
         <input type="text" required class="form-control" id="Name">
     </div>
     <div class="form-group">
-        <label>类型:</label>
+        <label>类型：</label>
         <select class="form-control" required id="OptionID">
             <option value="1">抽奖后排除</option>
             <option value="2">可重复抽奖</option>
@@ -47,12 +47,12 @@
                         <hr />
                         @if (item.OptionID == 2)
                         {
-                            <a href="/Play/Repeat?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/Play/Repeat?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
                             <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">奖项配置</a>
                         }
                         else
                         {
-                            <a href="/Play/Two?LuckdrawDrawID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
+                            <a href="/Play/Two?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
                             <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">奖项配置</a>
                         }
                     </div>

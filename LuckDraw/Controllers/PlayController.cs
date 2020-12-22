@@ -24,17 +24,17 @@ namespace LuckDraw.Controllers
             return View();
 
         }
-        public IActionResult Repeat(int LuckdrawDrawID)
+        public IActionResult Repeat(int ID)
         {
             var DrawName = (from luckdraw in EF.LuckDraws
-                            where luckdraw.DrawID == LuckdrawDrawID
+                            where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
                             select dr.Name).FirstOrDefault();
 
             PlayViweModel view = new PlayViweModel
             {
                 Drawname = DrawName,
-                Drawid = LuckdrawDrawID
+                Drawid = ID
             };
             return View(view);
 
