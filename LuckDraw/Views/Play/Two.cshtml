@@ -11,7 +11,7 @@
  
     </div>
     <button type="button"  class="btn btn-link" id="chou">抽取幸运观众</button>
-    <div id="div1">
+    <div id="div2">
 
     </div>
 </div>
@@ -33,17 +33,25 @@
                 for (item of res) {
                     //判断时间是否为空
                     //debugger
-                    if (item.Time == null) {
-                        content1 += `<button class="btn btn-light" onclick="ID(${item.id})">${item.name}</button>`   //待抽奖项
-                    } else {
-                        content2 += `<button class="btn btn-danger" onclick="ID(${item.id})">${item.name}<br>${item.time}</button>`   //抽到奖项
+                    if (item.time == null) {
+                        content1 += `<button class="btn btn-light" onclick="ID(${item.id})">${item.name}</button>`;  //待抽奖项
+                    }
+     
+                      //  console.log(content1);
+                    if (item.time != null)
+                    {
+                        content2 += `<button class="btn btn-danger" onclick="ID(${item.id})">${item.name}${item.time}</button>`;
+                        console.log(item.time);
+                        //抽到奖项
                     }
                 };
-                $('#div1').append(content1);  //待抽奖项
-                $('#div1').append(content2);//抽到奖项
+           //     $("#div1").remove();
+                $('#div1').html(content1);  //待抽奖项
+              //  $("#div2").remove();
+                $('#div2').html(content2);//抽到奖项
             })
         }
-        debugger
+       // debugger
         //choujiang
         $("#chou").click(function () {
             $.post("/play/NonLucky", {ID : @Model.ID}, function (res) {

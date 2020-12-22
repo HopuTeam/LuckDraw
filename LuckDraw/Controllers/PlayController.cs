@@ -164,7 +164,7 @@ namespace LuckDraw.Controllers
             var list = (from LuckDraw in EF.LuckDraws
                         join Luck in EF.Lucks on LuckDraw.LuckID equals Luck.ID
                         join Draw in EF.Draws on LuckDraw.DrawID equals Draw.ID
-                        where LuckDraw.DrawID == Draw.ID
+                        where LuckDraw.DrawID == ID
                         select new
                         {
                             ID = LuckDraw.ID,
