@@ -10,19 +10,16 @@ using System.Threading.Tasks;
 
 namespace LuckDraw.Controllers
 {
-    public class PlayController : BaseController
+    public class PlayController : Controller
     {
         private CoreEntities EF { get; }
-        public PlayController(CoreEntities _ef) : base(_ef)
+        public PlayController(CoreEntities _ef)
         {
             EF = _ef;
         }
-
         public IActionResult Index()
         {
-
             return View();
-
         }
         public IActionResult Repeat(int ID)
         {
@@ -38,9 +35,7 @@ namespace LuckDraw.Controllers
                 Drawid = ID
             };
             return View(view);
-
         }
-
         /// <summary>
         /// 可重复抽奖的方法
         /// </summary>
@@ -171,9 +166,9 @@ namespace LuckDraw.Controllers
 
             // 定义权重数组
             int arrayCount = 0;
-            foreach (var item in EF.LuckDraws.Where(x => x.DrawID == ID))
+            foreach (var item in mod)
                 arrayCount += EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID).Weigh;
-            string[] list = new string[arrayCount];
+            int[] list = new int[arrayCount];
 
             int z = 0;
             foreach (var item in mod)
@@ -181,19 +176,16 @@ namespace LuckDraw.Controllers
                 var Dmod = EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID);
                 for (int i = 0; i < Dmod.Weigh; i++)
                 {
-                    list[z] = Dmod.Name;
+                    list[z] = Dmod.ID;
                     z++;
                 }
             }
 
             int index = new Random().Next(0, z);
-            string Name = list[index];//幸运观众的名字
-            var luckID = (from x in EF.Lucks
-                          join y in EF.LuckDraws on x.ID equals y.LuckID
-                          where x.Name == Name
-                          select y.ID).FirstOrDefault();
-            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.ID == luckID);
-            EideTime.EntryTime = DateTime.Now;
+            int luckid = list[index];//幸运观众的id
+            var luck = EF.Lucks.FirstOrDefault(t => t.ID == luckid);//抽取到的幸运观众
+            string Name = luck.Name;//幸运观众的名字
+            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luck.ID && x.DrawID==ID);//给幸运观众加抽中时间
             EF.SaveChanges();
             return Content($"抽奖成功,恭喜 { Name } 同学");
         }
