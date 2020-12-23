@@ -42,9 +42,9 @@ namespace LuckDraw.Controllers
                 //登录用户名字
                 userName = mod.username,
                 //奖项的数量
-                drawCount = mod.luck,
+                drawCount = mod.draw,
                 //项目的数量
-                luckCount = mod.draw
+                luckCount = mod.luck
             };
             return Json(model);
         }
