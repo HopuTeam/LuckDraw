@@ -5,14 +5,17 @@
 }
 <h2>@Model.Name</h2>
 <hr />
-<div>
-    <h3>待抽奖项</h3>
-    <div id="div1">
-
+<div class="row text-center">
+    <div class="col">
+        <h4>待抽奖项</h4>
+        <div id="div1"></div>
     </div>
-    <button type="button" class="btn btn-link" id="chou">抽取幸运观众</button>
-    <div id="div2">
-
+    <div class="col">
+        <button type="button" class="btn btn-info" style="margin: 5px;" id="chou">抽取幸运观众</button>
+    </div>
+    <div class="col">
+        <h4>已抽奖项</h4>
+        <div id="div2"></div>
     </div>
 </div>
 
@@ -25,39 +28,32 @@
         function getdata() {
             var win = layer.load();
 
-            $.post("/Play/Updata", {ID : @Model.ID}, function (res) {
+            $.post("/Play/Updata", { ID: @Model.ID}, function (res) {
                 layer.close(win);
                 var content1 = "";
-                var content2= "";
-                var Addhtml = "";
+                var content2 = "";
                 for (item of res) {
                     //判断时间是否为空
                     //debugger
                     if (item.time == null) {
-                        content1 += `<div class="btn btn-light" onclick="ID(${item.id})">${item.name}</div>`;  //待抽奖项
-                    }
-
-                    //console.log(content1);
-                    if (item.time != null)
-                    {
-                        content2 += `<div class="btn btn-danger" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
-                        console.log(item.time);
+                        content1 += `<div class="btn btn-success" style="margin: 5px;" onclick="ID(${item.id})">${item.name}</div>`;  //待抽奖项
+                    } else {
+                        content2 += `<div class="btn btn-sm btn-warning" style="margin: 5px;" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
+                        //console.log(item.time);
                         //抽到奖项
-                    }
+                    };
                 };
-                //$("#div1").remove();
                 $('#div1').html(content1);//待抽奖项
-                //$("#div2").remove();
                 $('#div2').html(content2);//抽到奖项
-            })
-        }
+            });
+        };
        // debugger
         //choujiang
         $("#chou").click(function () {
-            $.post("/Play/NonLucky", {ID : @Model.ID}, function (res) {
-                alert(res);
-                getdata();//刷新页面
-            })
+            $.post("/Play/NonLucky", { ID: @Model.ID}, function (res) {
+                layer.alert(res);
+                getdata();//刷新数据
+            });
         });
         //移除
         function ID(id) {
@@ -65,9 +61,13 @@
                 ID: id,
             };
             $.get("/Play/TwoEide", data, function (res) {
-                alert(res);
-                getdata();//刷新页面
-            })
-        }
+                if (res = "success") {
+                    layer.alert("操作成功");
+                    getdata();//刷新数据
+                } else {
+                    layer.alert(res);
+                }
+            });
+        };
     </script>
 }

@@ -143,9 +143,9 @@ namespace LuckDraw.Controllers
         /// <param name="ID"></param>
         /// <returns></returns>
         /// 
-        public IActionResult Two(int ID = 2)
+        public IActionResult Two(int ID)
         {
-            return View(EF.Draws.FirstOrDefault(x => x.ID == ID));
+            return View(EF.Draws.FirstOrDefault(x => x.ID == Convert.ToInt32(ID)));
         }
 
         public IActionResult Updata(int ID)//ID前端传Draws的id 直接调用
@@ -179,7 +179,13 @@ namespace LuckDraw.Controllers
             var a = mod.Count();
             if (a == 0)
                 return Content("没了");
-            string[] list = new string[200];
+
+            // 定义权重数组
+            int arrayCount = 0;
+            foreach (var item in EF.LuckDraws.Where(x => x.DrawID == ID))
+                arrayCount += EF.Lucks.FirstOrDefault(x => x.ID == item.LuckID).Weigh;
+            string[] list = new string[arrayCount];
+
             int z = 0;
             foreach (var item in mod)
             {
@@ -189,8 +195,8 @@ namespace LuckDraw.Controllers
                     list[z] = Dmod.Name;
                     z++;
                 }
-
             }
+
             int index = new Random().Next(0, z);
             string Name = list[index];//幸运观众的名字
             var luckID = (from x in EF.Lucks
