@@ -8,9 +8,9 @@
 <div>
     <h3>待抽奖项</h3>
     <div id="div1">
- 
+
     </div>
-    <button type="button"  class="btn btn-link" id="chou">抽取幸运观众</button>
+    <button type="button" class="btn btn-link" id="chou">抽取幸运观众</button>
     <div id="div2">
 
     </div>
@@ -19,13 +19,13 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-        getdata();
+            getdata();
         });
 
         function getdata() {
             var win = layer.load();
 
-            $.post("/play/Updata", {ID : @Model.ID}, function (res) {
+            $.post("/Play/Updata", {ID : @Model.ID}, function (res) {
                 layer.close(win);
                 var content1 = "";
                 var content2= "";
@@ -36,8 +36,8 @@
                     if (item.time == null) {
                         content1 += `<div class="btn btn-light" onclick="ID(${item.id})">${item.name}</div>`;  //待抽奖项
                     }
-     
-                      //  console.log(content1);
+
+                    //console.log(content1);
                     if (item.time != null)
                     {
                         content2 += `<div class="btn btn-danger" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
@@ -45,16 +45,16 @@
                         //抽到奖项
                     }
                 };
-           //     $("#div1").remove();
-                $('#div1').html(content1);  //待抽奖项
-              //  $("#div2").remove();
+                //$("#div1").remove();
+                $('#div1').html(content1);//待抽奖项
+                //$("#div2").remove();
                 $('#div2').html(content2);//抽到奖项
             })
         }
        // debugger
         //choujiang
         $("#chou").click(function () {
-            $.post("/play/NonLucky", {ID : @Model.ID}, function (res) {
+            $.post("/Play/NonLucky", {ID : @Model.ID}, function (res) {
                 alert(res);
                 getdata();//刷新页面
             })
@@ -70,4 +70,4 @@
             })
         }
     </script>
-    }
+}

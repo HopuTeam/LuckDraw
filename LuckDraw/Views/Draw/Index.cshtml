@@ -21,7 +21,7 @@
         </select>
     </div>
     <div class="btn-group">
-        <button type="submit" onclick="add()" class="btn btn-primary">添加项目</button>
+        <button type="submit" class="btn btn-primary">添加项目</button>
         <button type="button" onclick="{ $('#submit').slideToggle(250); }" class="btn btn-secondary">取消</button>
     </div>
     <hr />
@@ -67,7 +67,7 @@
             $('#submit').slideToggle(250);
         });
 
-        function add() {
+        $('#submit').submit(function () {
             var paras = {
                 LuckType: $('#OptionID').val(),
                 Name: $('#Name').val(),
@@ -76,7 +76,7 @@
             $.post('/Draw/Add', paras, (res) => {
                 if (res > 0) {
                     layer.msg("添加成功");
-
+                    window.location.reload();
                 } else {
                     layer.msg("添加出错");
                 }
@@ -85,7 +85,7 @@
                 }, 350);
             });
             return false;
-        };
+        });
 
         function del(id) {
             //var paras = {
