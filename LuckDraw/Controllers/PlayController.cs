@@ -26,6 +26,7 @@ namespace LuckDraw.Controllers
         }
         public IActionResult Repeat(int ID)
         {
+           
             var DrawName = (from luckdraw in EF.LuckDraws
                             where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
@@ -46,13 +47,17 @@ namespace LuckDraw.Controllers
         /// <returns></returns>
         public IActionResult One(int Drawid)
         {
-            var User = HttpContext.Session.GetModel<Sign>("User");
+            int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
+            DigitalWeigh weigh = new DigitalWeigh();
+
+
             var model = (from luckdraw in EF.LuckDraws
                          where luckdraw.DrawID == Drawid
                          join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
-                         where luck1.SignID == User.ID
+                         where luck1.SignID == Userid
                          select new
                          {
+                             luckdraw= luckdraw.ID,
                              id = luck1.ID,
                              name = luck1.Name,
                              Weigh = luck1.Weigh
@@ -88,29 +93,13 @@ namespace LuckDraw.Controllers
                     break;
                 }
             }
-
-
             Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();
             //抽到的名字
             string selectedElement = luck.Name;
             //添加抽中的次数
-            Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID).FirstOrDefault();
-            if (draw == null)
-            {
-                Models.LuckDraw list = new Models.LuckDraw
-                {
-                    LuckID = luck.ID,
-                    DrawID = Drawid,
-                    Number = 1
-                };
-                EF.LuckDraws.Add(list);
-                EF.SaveChanges();
-            }
-            else
-            {
+            Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID && c.DrawID==Drawid).FirstOrDefault();                  
                 draw.Number += 1;
-                EF.SaveChanges();
-            }
+                EF.SaveChanges();           
             return Content(selectedElement);
         }
 

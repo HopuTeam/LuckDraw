@@ -52,38 +52,8 @@ namespace LuckDraw.Controllers
 
         public IActionResult Add(string LuckType, string Name)
         {
-            var sid = HttpContext.Session.GetModel<Sign>("User").ID;
-            int luktype = Convert.ToInt32(LuckType);
-            int cishu = 0;
-            Draw draw = new Draw
-            {
-                SignID = sid,
-                Name = Name,
-                OptionID = luktype
-            };
-            EF.Draws.Add(draw);
-            EF.SaveChanges();
-
-            var luck = (from lu in EF.Lucks
-                        where lu.SignID == sid
-                        select new
-                        {
-                            lu.ID
-                        }).ToList();
-
-            foreach (var item in luck)
-            {
-                Models.LuckDraw luckDraw = new Models.LuckDraw
-                {
-                    DrawID = draw.ID,
-                    LuckID = item.ID
-                };
-                EF.LuckDraws.Add(luckDraw);
-                EF.SaveChanges();
-                cishu++;
-            }
-
-            return Json(cishu);
+            
+            return View();
         }
 
         [HttpPost]
