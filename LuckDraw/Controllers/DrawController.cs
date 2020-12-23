@@ -18,9 +18,8 @@ namespace LuckDraw.Controllers
 
         public IActionResult Index()
         {
-            var sid = HttpContext.Session.GetModel<Sign>("User").ID;
             var list = (from dr in EF.Draws
-                        where dr.SignID == sid
+                        where dr.SignID == HttpContext.Session.GetModel<Sign>("User").ID
                         join op in EF.Options on dr.OptionID equals op.ID
                         select new
                         {
@@ -30,9 +29,7 @@ namespace LuckDraw.Controllers
                             zongshu = (from lcda in EF.LuckDraws
                                        where lcda.DrawID == dr.ID
                                        select lcda.DrawID).Count(),
-                            luckdrawDrawID = (from lcda in EF.LuckDraws
-                                              where lcda.DrawID == dr.ID
-                                              select lcda.DrawID).FirstOrDefault()
+                            luckdrawDrawID = dr.ID,
                         }).ToList();
 
             var res = new List<DrawViewModle>();
@@ -44,23 +41,28 @@ namespace LuckDraw.Controllers
                     OptionName = item.opname,
                     OptionID = item.opid,
                     LuckCount = item.zongshu,
-                    LuckdrawDrawID = item.luckdrawDrawID
+                    LuckdrawDrawID = item.luckdrawDrawID,
                 });
             }
             return View(res);
         }
 
-        public IActionResult Add(string LuckType, string Name)
+        public IActionResult Add(Draw draw)
         {
-            
-            return View();
+            draw.SignID = HttpContext.Session.GetModel<Sign>("User").ID;
+            EF.Draws.Add(draw);
+
+            if (EF.SaveChanges() > 0)
+                return Content("success");
+            else
+                return Content("添加失败");
         }
 
         [HttpPost]
         public IActionResult Delete(int ID)
         {
             var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
-            var info = EF.LuckDraws.Where(x => x.DrawID == mod.ID);
+            var info = EF.LuckDraws.Where(x => x.DrawID == ID);
             if (info.ToList().Count() > 0)
                 foreach (var item in info)
                     EF.Remove(item);

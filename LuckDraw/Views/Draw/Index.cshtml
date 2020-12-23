@@ -69,17 +69,17 @@
 
         $('#submit').submit(function () {
             var paras = {
-                LuckType: $('#OptionID').val(),
                 Name: $('#Name').val(),
+                OptionID: $('#OptionID').val(),
             };
             layer.load();
             $.post('/Draw/Add', paras, (res) => {
-                if (res > 0) {
+                if (res == "success") {
                     layer.msg("添加成功");
                     window.location.reload();
                 } else {
                     layer.msg("添加出错");
-                }
+                };
                 setTimeout(function () {
                     layer.closeAll('loading');
                 }, 350);
@@ -88,19 +88,21 @@
         });
 
         function del(id) {
-            //var paras = {
-            //    id: id
-            //}
             layer.confirm('确认删除此项目吗？', {
                 btn: ['确定', '取消']
             }, function () {
                 var win = layer.load();
+                //var data = {
+                //    ID: id,
+                //};
                 $.post('/Draw/Delete', { ID: id }, (res) => {
                     layer.close(win);
-                    if (res = "success")
+                    if (res == "success") {
+                        layer.msg("删除成功");
                         window.location.reload();
-                    else
-                        layer.msg(res.msg);
+                    } else {
+                        layer.msg(res);
+                    }
                 });
             });
         };
