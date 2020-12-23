@@ -180,12 +180,15 @@ namespace LuckDraw.Controllers
                     z++;
                 }
             }
-
             int index = new Random().Next(0, z);
             int luckid = list[index];//幸运观众的id
-            var luck = EF.Lucks.FirstOrDefault(t => t.ID == luckid);//抽取到的幸运观众
-            string Name = luck.Name;//幸运观众的名字
-            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luck.ID && x.DrawID==ID);//给幸运观众加抽中时间
+              //抽取到的幸运观众
+            string Name = (from luname in EF.Lucks 
+                           where  luname.ID == luckid
+                           select luname.Name
+                           ).FirstOrDefault();//幸运观众的名字
+            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luckid && x.DrawID==ID);//给幸运观众加抽中时间
+            EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
             return Content($"抽奖成功,恭喜 { Name } 同学");
         }
@@ -205,5 +208,6 @@ namespace LuckDraw.Controllers
             EF.SaveChanges();
             return Content("success");
         }
+
     }
 }
