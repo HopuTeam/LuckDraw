@@ -40,7 +40,7 @@ namespace LuckDraw.Controllers
         /// 可重复抽奖的方法
         /// </summary>
         /// <returns></returns>
-        public IActionResult One(int Drawid)
+        public IActionResult One(int Drawid,int Second=1)
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
             DigitalWeigh weigh = new DigitalWeigh();
@@ -70,32 +70,45 @@ namespace LuckDraw.Controllers
             {
                 allRate += item.Value;
             }
-            //记录抽到的id
-            int luckid = 0;
-            //在规定范围产生一个随机数 
-            int diceRoll = ra.Next(1, allRate);
-            int cumulative = 0;
-            //循环查到的数组的条目数，如果随机数生成的是2，那抽到的人肯定是数组里面的第二个
-            for (int i = 0; i < elements.Count; i++)
-            {
-                //循环一遍就加一遍权重值，就是例如第一个人的权重是1，当前cumulative=1，第二个人权重是3，当前权重=1+3=4
-                cumulative += elements[i].Value;
-
-                //如果随机数小于等于当前权重，就是抽到这个人。例如本次随机数是3，第一次 (diceRoll<= cumulative)  => (3<=1),不成立进入下一次  。第二次cumulative=4，随机数3<=4，那抽到的就是数组中的第二个
-                if (diceRoll <= cumulative)
-                {
-                    luckid = elements[i].Key;
-                    break;
-                }
-            }
-            Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();
             //抽到的名字
-            string selectedElement = luck.Name;
-            //添加抽中的次数
-            Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID && c.DrawID==Drawid).FirstOrDefault();                  
+            string selectedElement = string.Empty;
+            
+            //抽多少次
+            for (int n = 0; n < Second; n++)
+            {
+                //记录抽到的id
+                int luckid = 0;
+                //在规定范围产生一个随机数 
+                int diceRoll = ra.Next(1, allRate);
+                int cumulative = 0;
+                //循环查到的数组的条目数，如果随机数生成的是2，那抽到的人肯定是数组里面的第二个
+                for (int i = 0; i < elements.Count; i++)
+                {
+                    //循环一遍就加一遍权重值，就是例如第一个人的权重是1，当前cumulative=1，第二个人权重是3，当前权重=1+3=4
+                    cumulative += elements[i].Value;
+                    //如果随机数小于等于当前权重，就是抽到这个人。例如本次随机数是3，第一次 (diceRoll<= cumulative)  => (3<=1),不成立进入下一次  。第二次cumulative=4，随机数3<=4，那抽到的就是数组中的第二个
+                    if (diceRoll <= cumulative)
+                    {
+                        luckid = elements[i].Key;
+                        break;
+                    }
+                }
+                Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();               
+                   selectedElement = luck.Name;
+                //添加抽中的次数
+                Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID && c.DrawID == Drawid).FirstOrDefault();
                 draw.Number += 1;
-                EF.SaveChanges();           
-            return Content(selectedElement);
+                EF.SaveChanges();
+            }
+            if (Second==1)
+            {
+                return Content(selectedElement);
+            }
+            else
+            {
+                return Content($"已抽取：{Second}次");
+            }       
+           
         }
 
 
@@ -104,13 +117,12 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <returns></returns>
         public IActionResult GetOptions(int Drawid)
-        {
-            var c = HttpContext.Session.GetModel<Sign>("User");
+        {           
             var a = (from luckdrawdb in EF.LuckDraws
                      where luckdrawdb.DrawID == Drawid
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
-                     where luck.SignID == c.ID
-                     select new
+                     where luck.SignID ==  HttpContext.Session.GetModel<Sign>("User").ID
+            select new
                      {
                          name = luck.Name,
                          cishu = luckdrawdb.Number
@@ -121,6 +133,38 @@ namespace LuckDraw.Controllers
             return Json(a);
         }
 
+        public IActionResult Empty(int Drawid)
+        {
+            int t = 0;
+            var a = (from luckdrawdb in EF.LuckDraws
+                     where luckdrawdb.DrawID == Drawid
+                     join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
+                     where luck.SignID == HttpContext.Session.GetModel<Sign>("User").ID
+                     select new
+                     {                    
+                        id=luckdrawdb.ID
+                     }
+                      ).ToList();
+            if (a.Count()<0)
+            {
+                return Content("没有数据");
+            }
+            foreach (var item in a)
+            {
+                var lkda = EF.LuckDraws.FirstOrDefault(c => c.ID == item.id);
+                lkda.Number = 0;
+                EF.SaveChanges();
+                t++;
+            }
+            if (t>0)
+            {
+                return Content("次数已清空");
+            }
+            else
+            {
+                return Content("次数清空失败");
+            }
+        }
         /// <summary>
         /// 不可重复
         /// </summary>
