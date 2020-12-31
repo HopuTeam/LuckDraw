@@ -7,30 +7,30 @@
 <h2>@Model.Drawname</h2>
 <hr />
 
-<div>
-    <div class="row" style="margin-top:20px;">
-        <div class="col-md-12 text-center" style="min-height:200px;">
-            <select id="select">
-                <option value="1">1</option>
-                <option value="10">10</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
-            <input type="button" class="btn btn-danger" onclick="smoke()" value="抽取幸运观众" style="margin-top:80px;" />
-            <input type="button" class="btn btn-danger" onclick="Empty()" value="清空" style="margin-top:80px;" />
+<div class="row" style="margin-top:20px;">
+    <form class="col-md-12 text-center form-inline" id="submit">
+        <div class="form-group mx-sm-3 mb-2">
+            @*<div class="input-group-prepend">
+                    <div class="input-group-text">抽奖次数</div>
+                </div>*@
+            <label class="my-1 mr-2">抽奖次数</label>
+            <input type="number" id="inpVal" required class="form-control" style="max-width:80px;" min="1" max="100" value="1" />
         </div>
-        <div class="col-md-12" style="display:none;">
-            <div class="luckdraw">
-                <div class="luck-option">
-
-                </div>
-            </div>
-        </div>
-        <div class="col-md-12">
-            <h3>抽奖项</h3>
-            <div id="content-body">
+        <input type="submit" class="btn btn-danger mb-2" value="抽取幸运观众" />
+        <input type="button" class="btn btn-danger mb-2" onclick="empty()" value="清空" style="margin-left: 10px;" />
+    </form>
+    <hr />
+    <div class="col-md-12" style="display:none;">
+        <div class="luckdraw">
+            <div class="luck-option">
 
             </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <h3>抽奖项</h3>
+        <div id="content-body">
+
         </div>
     </div>
 </div>
@@ -56,10 +56,10 @@ class="btn btn-success">${item.name}（${item.cishu}）</button>`;
             });
         };
 
-        function smoke() {
+        $("#submit").submit(function () {
             //获取下拉框的值
-            var St = $('#select option:selected').val();
-            $.post('/play/One', { Drawid:@Model.Drawid, Second: St}, (res) => {
+            var St = $('#inpVal').val();
+            $.post('/Play/One', { Drawid: @Model.Drawid, Second: St }, (res) => {
                 if (res == "0") {
                     layer.alert(`抽奖项目为空`);
                 } else {
@@ -67,14 +67,15 @@ class="btn btn-success">${item.name}（${item.cishu}）</button>`;
                     getdata();
                 };
             });
-        };
+            return false;
+        })
 
-        function Empty()
+        function empty()
         {
-            $.post('/play/Empty', { Drawid:@Model.Drawid}, function (res) {
+            $.post('/Play/Empty', { Drawid: @Model.Drawid }, function (res) {
                 layer.alert(res);
                 getdata();
-            })
-        }
+            });
+        };
     </script>
 }
