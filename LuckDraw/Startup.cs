@@ -1,16 +1,9 @@
-using LuckDraw.Filters;
 using LuckDraw.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LuckDraw
 {
@@ -33,7 +26,7 @@ namespace LuckDraw
             });
             services.AddDbContext<CoreEntities>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("EFDbConnection"));
+                options.UseMySQL(Configuration.GetConnectionString("EFDbConnection"));
             });
             services.AddSession();
         }
@@ -44,7 +37,6 @@ namespace LuckDraw
             app.UseRouting();
             app.UseSession();
             app.UseStaticFiles();
-
             app.UseMvc(options =>
             {
                 options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");

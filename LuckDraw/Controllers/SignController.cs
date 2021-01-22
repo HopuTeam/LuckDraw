@@ -1,11 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LuckDraw.Handles;
 using LuckDraw.Models;
-using LuckDraw.Handles;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace LuckDraw.Controllers
 {

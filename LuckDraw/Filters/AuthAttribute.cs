@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using LuckDraw.Handles;
 using LuckDraw.Models;
-using LuckDraw.Handles;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LuckDraw.Filters
 {
@@ -16,7 +11,7 @@ namespace LuckDraw.Filters
         {
             if (context.HttpContext.Session.GetModel<Sign>("User") == null)
             {
-                context.Result = new RedirectResult("/Sign/Index");;
+                context.Result = new RedirectResult("/Sign/Index"); ;
             }
         }
     }

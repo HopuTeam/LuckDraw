@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace LuckDraw.Models
+﻿namespace LuckDraw.Models
 {
     public class DrawViewModle
     {
         /// <summary>
         /// 项目名称
         /// </summary>
-        public string DrawName{ get; set; }
+        public string DrawName { get; set; }
 
         /// <summary>
         /// Option类型名称

@@ -1,12 +1,9 @@
 ﻿using LuckDraw.Handles;
 using LuckDraw.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LuckDraw.Controllers
 {
@@ -23,7 +20,7 @@ namespace LuckDraw.Controllers
         }
         public IActionResult Repeat(int ID)
         {
-           
+
             var DrawName = (from luckdraw in EF.LuckDraws
                             where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
@@ -40,7 +37,7 @@ namespace LuckDraw.Controllers
         /// 可重复抽奖的方法
         /// </summary>
         /// <returns></returns>
-        public IActionResult One(int Drawid,int Second=1)
+        public IActionResult One(int Drawid, int Second = 1)
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
             DigitalWeigh weigh = new DigitalWeigh();
@@ -52,7 +49,7 @@ namespace LuckDraw.Controllers
                          where luck1.SignID == Userid
                          select new
                          {
-                             luckdraw= luckdraw.ID,
+                             luckdraw = luckdraw.ID,
                              id = luck1.ID,
                              name = luck1.Name,
                              Weigh = luck1.Weigh
@@ -72,7 +69,7 @@ namespace LuckDraw.Controllers
             }
             //抽到的名字
             string selectedElement = string.Empty;
-            
+
             //抽多少次
             for (int n = 0; n < Second; n++)
             {
@@ -93,22 +90,22 @@ namespace LuckDraw.Controllers
                         break;
                     }
                 }
-                Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();               
-                   selectedElement = luck.Name;
+                Luck luck = EF.Lucks.Where(a => a.ID == luckid).FirstOrDefault();
+                selectedElement = luck.Name;
                 //添加抽中的次数
                 Models.LuckDraw draw = EF.LuckDraws.Where(c => c.LuckID == luck.ID && c.DrawID == Drawid).FirstOrDefault();
                 draw.Number += 1;
                 EF.SaveChanges();
             }
-            if (Second==1)
+            if (Second == 1)
             {
                 return Content(selectedElement);
             }
             else
             {
                 return Content($"已抽取：{Second}次");
-            }       
-           
+            }
+
         }
 
 
@@ -117,12 +114,12 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <returns></returns>
         public IActionResult GetOptions(int Drawid)
-        {           
+        {
             var a = (from luckdrawdb in EF.LuckDraws
                      where luckdrawdb.DrawID == Drawid
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
-                     where luck.SignID ==  HttpContext.Session.GetModel<Sign>("User").ID
-            select new
+                     where luck.SignID == HttpContext.Session.GetModel<Sign>("User").ID
+                     select new
                      {
                          name = luck.Name,
                          cishu = luckdrawdb.Number
@@ -141,11 +138,11 @@ namespace LuckDraw.Controllers
                      join luck in EF.Lucks on luckdrawdb.LuckID equals luck.ID
                      where luck.SignID == HttpContext.Session.GetModel<Sign>("User").ID
                      select new
-                     {                    
-                        id=luckdrawdb.ID
+                     {
+                         id = luckdrawdb.ID
                      }
                       ).ToList();
-            if (a.Count()<0)
+            if (a.Count() < 0)
             {
                 return Content("没有数据");
             }
@@ -156,7 +153,7 @@ namespace LuckDraw.Controllers
                 EF.SaveChanges();
                 t++;
             }
-            if (t>0)
+            if (t > 0)
             {
                 return Content("次数已清空");
             }
@@ -226,12 +223,12 @@ namespace LuckDraw.Controllers
             }
             int index = new Random().Next(0, z);
             int luckid = list[index];//幸运观众的id
-              //抽取到的幸运观众
-            string Name = (from luname in EF.Lucks 
-                           where  luname.ID == luckid
+                                     //抽取到的幸运观众
+            string Name = (from luname in EF.Lucks
+                           where luname.ID == luckid
                            select luname.Name
                            ).FirstOrDefault();//幸运观众的名字
-            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luckid && x.DrawID==ID);//给幸运观众加抽中时间
+            var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luckid && x.DrawID == ID);//给幸运观众加抽中时间
             EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
             return Content($"抽奖成功,恭喜 { Name } 同学");
