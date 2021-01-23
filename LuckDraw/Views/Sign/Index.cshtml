@@ -1,9 +1,4 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -30,12 +25,13 @@
             <button class="btn btn-primary btn-block" type="submit">登录</button>
             <button class="btn btn-success btn-block" type="button" id="register">注册</button>
         </div>
-        <a id="Forget" href="#Forget">找回密码</a>
-        <p class="mt-5 mb-3 text-muted">Copyright &copy; 2014-@DateTime.Now.Year Skilemon</p>
+        <p style="padding-top:20px;"><a id="Forget" href="#Forget">找回密码</a></p>
+        <p class="mt-4 mb-2 text-muted">Copyright &copy; 2014-@DateTime.Now.Year Skilemon</p>
     </form>
     <script src="~/Scripts/jquery-3.5.1.min.js"></script>
     <script src="~/Scripts/bootstrap.bundle.min.js"></script>
     <script src="~/Content/layui/layui.all.js"></script>
+    <script src="~/Scripts/mouse-click.js"></script>
     <script src="~/Scripts/copyright.js"></script>
     <script>
         var winOpen = null;
@@ -68,7 +64,7 @@
                 title: '注册',
                 shadeClose: true,
                 shade: [0.45],
-                area: ['340px', '450px'],
+                area: ['340px', '470px'],
                 content: '/Sign/Register', //iframe的url，no代表不显示滚动条
             });
         });
@@ -79,7 +75,7 @@
                 title: '找回密码',
                 shadeClose: true,
                 shade: [0.45],
-                area: ['340px', '450px'],
+                area: ['340px', '470px'],
                 content: '/Sign/Forget', //iframe的url，no代表不显示滚动条
             });
         });
