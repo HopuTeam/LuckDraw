@@ -6,7 +6,7 @@
 }
 <h2>抽奖项目</h2>
 <hr />
-<button class="btn btn-info" onclick="{ $('#submit').slideToggle(250); }">添加抽奖项目</button>
+<button class="btn btn-info" onclick="$('#submit').slideToggle(250);">添加抽奖项目</button>
 <hr />
 <form id="submit">
     <div class="form-group">
@@ -22,7 +22,7 @@
     </div>
     <div class="btn-group">
         <button type="submit" class="btn btn-primary">添加项目</button>
-        <button type="button" onclick="{ $('#submit').slideToggle(250); }" class="btn btn-secondary">取消</button>
+        <button type="button" onclick="$('#submit').slideToggle(250);" class="btn btn-secondary">取消</button>
     </div>
     <hr />
 </form>
@@ -48,12 +48,12 @@
                         @if (item.OptionID == 2)
                         {
                             <a href="/Play/Repeat?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
+                            <a href="/Draw/SetPoints?ID=@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
                         }
                         else
                         {
                             <a href="/Play/Two?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="/SetPoints/@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
+                            <a href="/Draw/SetPoints?ID=@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
                         }
                     </div>
                 </div>
@@ -64,7 +64,7 @@
 @section scripts{
     <script>
         $(document).ready(function () {
-            $('#submit').slideToggle(250);
+            $('#submit').hide();
         });
 
         $('#submit').submit(function () {

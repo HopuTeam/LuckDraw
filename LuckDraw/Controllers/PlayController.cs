@@ -40,8 +40,6 @@ namespace LuckDraw.Controllers
         public IActionResult One(int Drawid, int Second = 1)
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
-            DigitalWeigh weigh = new DigitalWeigh();
-
 
             var model = (from luckdraw in EF.LuckDraws
                          where luckdraw.DrawID == Drawid
