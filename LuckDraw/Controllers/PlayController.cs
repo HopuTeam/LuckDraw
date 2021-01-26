@@ -20,7 +20,6 @@ namespace LuckDraw.Controllers
         }
         public IActionResult Repeat(int ID)
         {
-
             var DrawName = (from luckdraw in EF.LuckDraws
                             where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
@@ -40,7 +39,6 @@ namespace LuckDraw.Controllers
         public IActionResult One(int Drawid, int Second = 1)
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
-
             var model = (from luckdraw in EF.LuckDraws
                          where luckdraw.DrawID == Drawid
                          join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID
@@ -124,7 +122,6 @@ namespace LuckDraw.Controllers
                      }
 
             ).ToList();
-
             return Json(a);
         }
 
