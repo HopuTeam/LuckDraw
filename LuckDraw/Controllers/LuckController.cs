@@ -1,7 +1,6 @@
 ﻿using LuckDraw.Handles;
 using LuckDraw.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LuckDraw.Controllers
@@ -17,45 +16,6 @@ namespace LuckDraw.Controllers
         public IActionResult Index()
         {
             return View(EF.Lucks.Where(x => x.SignID == HttpContext.Session.GetModel<Sign>("User").ID).ToList());
-        }
-
-        public IActionResult Setoptions()
-        {
-            int Userid= HttpContext.Session.GetModel<Sign>("User").ID;
-            List<Luck> mod = EF.Lucks.Where(a => a.SignID == Userid).ToList();
-            return View(mod);
-        }
-
-        /// <summary>
-        /// 保存配置奖项
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        public IActionResult Save(List<Models.LuckDraw> view)
-        {
-            List<Models.LuckDraw> draws = EF.LuckDraws.ToList();                  
-            List<Models.LuckDraw> list = new List<Models.LuckDraw>();
-            list = view;       
-            for (int i = 0; i < view.Count(); i++)//循环去除重复项
-            {
-                foreach (var item in draws)
-                {
-                    if (view[i].LuckID==item.LuckID && view[i].DrawID==item.DrawID)
-                    {
-                        list.Remove(view[i]);
-                        break;
-                    }
-                }
-            }         
-            EF.LuckDraws.AddRange(list);
-            if (EF.SaveChanges()>0)
-            {
-                return Content("success");
-            }
-            else
-            {
-                return Content("添加失败");
-            }
         }
 
         [HttpGet]
