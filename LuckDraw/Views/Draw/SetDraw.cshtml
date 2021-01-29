@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Set Draw";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var DrawID = ViewData["drwaid"];
+    var DrawID = ViewData["drwaid"];   
 }
 @section styles{
     <style>
@@ -30,6 +30,9 @@
             color: black;
             border: 3px solid #ccc;
         }
+       .hr{
+           margin-top:8%;
+       }
     </style>
 }
 <h3>设置项目奖项</h3>
@@ -44,19 +47,20 @@
     <div class="row" style="margin-top:20px;">
         @foreach (var item in Model.Where(a => a.ParentID == 0))//一级=>抽奖组名字
         {
-            <div class="col-md-12">
-                <p class="ops-group " data-childcount="3" data-id="@item.ID" onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
-                    @item.Name
-                </p>
-                @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
-                {
-                    <div class="col-md-12 ">
-                        <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops " style="border-color: #000000;">
-                            @b.Name
-                        </div>
+        <div class="col-md-12">
+            <p class="ops-group group_p_@item.ID" data-childcount=""  onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
+                @Html.Raw(item.Name)
+            </p>
+            @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
+            {              
+                <div class="col-md-12 ">
+                    <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops group_ops_@item.ID" style="border-color: #000000;">
+                        @Html.Raw(b.Name)
                     </div>
-                }
-            </div>
+                </div>
+            }
+            <hr class="hr" />
+        </div>       
         }
     </div>
 }
@@ -72,8 +76,7 @@
                 var data = {
                     id: Drawid,
                     ids: ids
-                };
-                console.log(data);
+                };             
                 $.post('/Draw/Save', data, function (res) {
                     layer.msg(res);
                 })
@@ -98,13 +101,13 @@
                     for (item of selops) {
                         if ($(item).hasClass(vcelm))
                             idx++;
-                    }
-                    console.log(count, idx);
+                    }                      
+                    //console.log(count, idx);
                     if (count == idx) {
                         $(pelm).addClass("luck-selcted");
                     } else {
                         $(pelm).removeClass("luck-selcted");
-                    }
+                    }                   
                 }
             }
     </script>
