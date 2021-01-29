@@ -48,12 +48,12 @@
                         @if (item.OptionID == 2)
                         {
                             <a href="/Play/Repeat?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="/Draw/SetDraw?ID=@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
+                            <a href="/Draw/SetDraw?ID=@item.DrawId" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
                         }
                         else
                         {
                             <a href="/Play/Two?ID=@item.LuckdrawDrawID" class="btn btn-primary">开始抽奖</a>
-                            <a href="/Draw/SetDraw?ID=@item.LuckdrawDrawID" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
+                            <a href="/Draw/SetDraw?ID=@item.DrawId" style="margin-left: 5px;" class="btn btn-success">项目配置</a>
                         }
                     </div>
                 </div>

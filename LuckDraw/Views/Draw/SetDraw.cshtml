@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Set Draw";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var DrawID = ViewData["drwaid"];
 }
 @section styles{
     <style>
@@ -16,6 +17,7 @@
             background-color: white;
             transition: all .3s;
             cursor: pointer;
+            float: left;
         }
 
         .luck-selcted {
@@ -43,13 +45,13 @@
         @foreach (var item in Model.Where(a => a.ParentID == 0))//一级=>抽奖组名字
         {
             <div class="col-md-12">
-                <p class="ops-group group_p_915 luck-selcted" data-childcount="3" data-id="915" onclick="push(this,915,true)" title="156" style="border-color: #000000;">
+                <p class="ops-group " data-childcount="3" data-id="@item.ID" onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
                     @item.Name
                 </p>
-                @foreach (var b in Model.Where(b => b.ParentID == item.ID))//一级=>抽奖项名字
+                @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
                 {
-                    <div class="col-md-12">
-                        <div data-id="1021" onclick="push(this,@b.ID)" class="luck-ops group_ops_915 luck-selcted" style="border-color: #000000;">
+                    <div class="col-md-12 ">
+                        <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops " style="border-color: #000000;">
                             @b.Name
                         </div>
                     </div>
@@ -60,10 +62,50 @@
 }
 @section scripts{
     <script>
-        function save() {
-            $.post('/Luck/Save', {}, function (res) {
-
-            })
-        }
+            var Drawid=@DrawID;
+            function save() {
+                var divs = $('.luck-selcted');
+                var ids = [];
+                for (var elm of divs) {
+                    ids.push($(elm).data('id'));
+                }
+                var data = {
+                    id: Drawid,
+                    ids: ids
+                };
+                console.log(data);
+                $.post('/Draw/Save', data, function (res) {
+                    layer.msg(res);
+                })
+            }
+            function push(_this, id, isparent) {
+                var pelm = ".group_p_" + id, celm = ".group_ops_" + id;
+                if (isparent)
+                {
+                    if ($(_this).hasClass("luck-selcted")) {
+                        $(_this).toggleClass("luck-selcted");
+                        $(celm).removeClass("luck-selcted");
+                    } else {
+                        $(_this).toggleClass("luck-selcted");
+                        $(celm).addClass("luck-selcted");
+                    }
+                } else {
+                    $(_this).toggleClass("luck-selcted");
+                    var count = $(pelm).data("childcount") - 0;
+                    var selops = $(".luck-selcted");
+                    var idx = 0;
+                    var vcelm = celm.substr(1);
+                    for (item of selops) {
+                        if ($(item).hasClass(vcelm))
+                            idx++;
+                    }
+                    console.log(count, idx);
+                    if (count == idx) {
+                        $(pelm).addClass("luck-selcted");
+                    } else {
+                        $(pelm).removeClass("luck-selcted");
+                    }
+                }
+            }
     </script>
 }

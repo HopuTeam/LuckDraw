@@ -1,6 +1,7 @@
 ﻿using LuckDraw.Handles;
 using LuckDraw.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,7 @@ namespace LuckDraw.Controllers
                         join op in EF.Options on dr.OptionID equals op.ID
                         select new
                         {
+                            drawsid=dr.ID,
                             drname = dr.Name,
                             opname = op.Name,
                             opid = op.ID,
@@ -35,6 +37,7 @@ namespace LuckDraw.Controllers
             {
                 res.Add(new DrawViewModle
                 {
+                    DrawId=item.drawsid,
                     DrawName = item.drname,
                     OptionName = item.opname,
                     OptionID = item.opid,
@@ -45,10 +48,11 @@ namespace LuckDraw.Controllers
             return View(res);
         }
 
-        public IActionResult SetDraw()
+        public IActionResult SetDraw(int ID)
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
             List<Luck> mod = EF.Lucks.Where(a => a.SignID == Userid).ToList();
+            ViewData["drwaid"] = ID;
             return View(mod);
         }
 
@@ -57,31 +61,24 @@ namespace LuckDraw.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult Save(List<Models.LuckDraw> view)
+        public IActionResult Save(int id, int[] ids)
         {
-            List<Models.LuckDraw> draws = EF.LuckDraws.ToList();
-            List<Models.LuckDraw> list = new List<Models.LuckDraw>();
-            list = view;
-            for (int i = 0; i < view.Count; i++)//循环去除重复项
+            List<Models.LuckDraw> mode = EF.LuckDraws.Where(a => a.DrawID == id).ToList();
+            EF.LuckDraws.RemoveRange(mode);
+            for (int i = 0; i < ids.Length; i++)
             {
-                foreach (var item in draws)
+                Models.LuckDraw luckDrawadd = new Models.LuckDraw()
                 {
-                    if (view[i].LuckID == item.LuckID && view[i].DrawID == item.DrawID)
-                    {
-                        list.Remove(view[i]);
-                        break;
-                    }
-                }
+                    DrawID = id,
+                    LuckID = Convert.ToInt32(ids[i])
+                };
+                EF.LuckDraws.Add(luckDrawadd);
             }
-            EF.LuckDraws.AddRange(list);
             if (EF.SaveChanges() > 0)
             {
-                return Content("success");
+                return Content("保存成功");
             }
-            else
-            {
-                return Content("添加失败");
-            }
+            return Content("保存失败");
         }
 
         public IActionResult Add(Draw draw)
