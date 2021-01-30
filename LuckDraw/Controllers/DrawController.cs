@@ -52,7 +52,7 @@ namespace LuckDraw.Controllers
         {
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
             List<Luck> mod = EF.Lucks.Where(a => a.SignID == Userid).ToList();
-            ViewData["drwaid"] = ID;
+            ViewData["drwas"] = EF.Draws.Where(b => b.ID == ID).FirstOrDefault();           
             return View(mod);
         }
 
