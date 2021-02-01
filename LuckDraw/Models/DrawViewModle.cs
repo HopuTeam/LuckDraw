@@ -2,11 +2,11 @@
 {
     public class DrawViewModle
     {
-        
+
         /// <summary>
         /// 项目id
         /// </summary>
-        public  int DrawId { get; set; }
+        public int DrawId { get; set; }
         /// <summary>
         /// 项目名称
         /// </summary>

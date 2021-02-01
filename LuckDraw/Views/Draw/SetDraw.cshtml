@@ -30,9 +30,10 @@
             color: black;
             border: 3px solid #ccc;
         }
-       .hr{
-           margin-top:8%;
-       }
+
+        .hr {
+            margin-top: 8%;
+        }
     </style>
 }
 <h3>设置项目[@draw.Name]奖项</h3>
@@ -47,74 +48,72 @@
     <div class="row" style="margin-top:20px;">
         @foreach (var item in Model.Where(a => a.ParentID == 0))//一级=>抽奖组名字
         {
-        <div class="col-md-12">
-            <p class="ops-group group_p_@item.ID"  data-childcount=""  onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
-                @Html.Raw(item.Name)
-            </p>
-            @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
-            {             
-                <div class="col-md-12 ">
-                    <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops group_ops_@item.ID" style="border-color: #000000;">
-                        @Html.Raw(b.Name)
+            <div class="col-md-12">
+                <p class="ops-group group_p_@item.ID" data-childcount="" onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
+                    @Html.Raw(item.Name)
+                </p>
+                @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
+                {
+                    <div class="col-md-12 ">
+                        <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops group_ops_@item.ID" style="border-color: #000000;">
+                            @Html.Raw(b.Name)
+                        </div>
                     </div>
-                </div>
-            }
-            <hr class="hr" />
-        </div>       
+                }
+                <hr class="hr" />
+            </div>
         }
     </div>
 }
 @section scripts{
     <script>
-        var Drawid =@draw.ID;
-            function save() {
-                var divs = $('.luck-selcted');
-                var ids = [];
-                for (var elm of divs) {
-                    ids.push($(elm).data('id'));
-                }
-                if (ids.length == 0)
-                {
-                    layer.msg("当前没有选择奖项，请选择！");
-                } else {
-                    var data = {
-                        id: Drawid,
-                        ids: ids
-                    };
-                    $.post('/Draw/Save', data, function (res) {
-                        layer.msg(res);
-                    })
-                }
-               
-            }
-            function push(_this, id, isparent) {
-                var pelm = ".group_p_" + id, celm = ".group_ops_" + id;
-                if (isparent)
-                {
-                    if ($(_this).hasClass("luck-selcted")) {
-                        $(_this).toggleClass("luck-selcted");
-                        $(celm).removeClass("luck-selcted");
-                    } else {
-                        $(_this).toggleClass("luck-selcted");
-                        $(celm).addClass("luck-selcted");
-                    }
+        var Drawid = @draw.ID;
+        function save() {
+            var divs = $('.luck-selcted');
+            var ids = [];
+            for (var elm of divs) {
+                ids.push($(elm).data('id'));
+            };
+
+            if (ids.length == 0) {
+                layer.msg("当前没有选择奖项，请选择！");
+            } else {
+                var data = {
+                    id: Drawid,
+                    ids: ids
+                };
+                $.post('/Draw/Save', data, function (res) {
+                    layer.msg(res);
+                });
+            };
+        };
+        function push(_this, id, isparent) {
+            var pelm = ".group_p_" + id, celm = ".group_ops_" + id;
+            if (isparent) {
+                if ($(_this).hasClass("luck-selcted")) {
+                    $(_this).toggleClass("luck-selcted");
+                    $(celm).removeClass("luck-selcted");
                 } else {
                     $(_this).toggleClass("luck-selcted");
-                    var count = $(pelm).data("childcount") - 0;
-                    var selops = $(".luck-selcted");
-                    var idx = 0;
-                    var vcelm = celm.substr(1);
-                    for (item of selops) {
-                        if ($(item).hasClass(vcelm))
-                            idx++;
-                    }                      
-                    //console.log(count, idx);
-                    if (count == idx) {
-                        $(pelm).addClass("luck-selcted");
-                    } else {
-                        $(pelm).removeClass("luck-selcted");
-                    }                   
-                }
-            }
+                    $(celm).addClass("luck-selcted");
+                };
+            } else {
+                $(_this).toggleClass("luck-selcted");
+                var count = $(pelm).data("childcount") - 0;
+                var selops = $(".luck-selcted");
+                var idx = 0;
+                var vcelm = celm.substr(1);
+                for (item of selops) {
+                    if ($(item).hasClass(vcelm))
+                        idx++;
+                };
+
+                if (count == idx) {
+                    $(pelm).addClass("luck-selcted");
+                } else {
+                    $(pelm).removeClass("luck-selcted");
+                };
+            };
+        };
     </script>
 }

@@ -28,18 +28,17 @@
         function getdata() {
             var win = layer.load();
 
-            $.post("/Play/Updata", { ID: @Model.ID}, function (res) {
+            $.post("/Play/Updata", { ID: @Model.ID }, function (res) {
                 layer.close(win);
-                var content1 = "";
-                var content2 = "";
+                var content1, content2 = "";
                 for (item of res) {
                     //判断时间是否为空
                     //debugger
                     if (item.time == null) {
-                        content1 += `<div class="btn btn-success" style="margin: 5px;" onclick="ID(${item.id})">${item.name}</div>`;  //待抽奖项
+                        content1 += `<div class="btn btn-success" style="margin: 5px;" onclick="ID(${item.id})">${item.name}</div>`;
+                        //待抽奖项
                     } else {
                         content2 += `<div class="btn btn-sm btn-warning" style="margin: 5px;" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
-                        //console.log(item.time);
                         //抽到奖项
                     };
                 };
@@ -47,10 +46,11 @@
                 $('#div2').html(content2);//抽到奖项
             });
         };
-       // debugger
-        //choujiang
+        // choujiang
         $("#chou").click(function () {
-            $.post("/Play/NonLucky", { ID: @Model.ID}, function (res) {
+            var win = layer.load();
+            $.post("/Play/NonLucky", { ID: @Model.ID }, function (res) {
+                layer.close(win);
                 layer.alert(res);
                 getdata();//刷新数据
             });

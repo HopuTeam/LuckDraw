@@ -1,6 +1,7 @@
 ﻿using LuckDraw.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using LuckDraw.Handles;
 
 namespace LuckDraw.Controllers
 {
@@ -14,10 +15,10 @@ namespace LuckDraw.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            //if (context.HttpContext.Session.GetModel<Sign>("User") != null)
-            //{
-            //    context.Result = new RedirectResult("/Home/Index");
-            //}
+            if (context.HttpContext.Session.GetModel<Sign>("User") == null)
+            {
+                context.Result = new RedirectResult("/Sign/Index");
+            }
         }
     }
 }

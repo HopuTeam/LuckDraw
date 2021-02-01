@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class LuckController : Controller
+    public class LuckController : BaseController
     {
         private CoreEntities EF { get; }
-        public LuckController(CoreEntities _ef)
+        public LuckController(CoreEntities _ef) : base(_ef)
         {
             EF = _ef;
         }

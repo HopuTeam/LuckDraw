@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class DrawController : Controller
+    public class DrawController : BaseController
     {
         private CoreEntities EF { get; }
-        public DrawController(CoreEntities _ef)
+        public DrawController(CoreEntities _ef) : base(_ef)
         {
             EF = _ef;
         }
@@ -22,7 +22,7 @@ namespace LuckDraw.Controllers
                         join op in EF.Options on dr.OptionID equals op.ID
                         select new
                         {
-                            drawsid=dr.ID,
+                            drawsid = dr.ID,
                             drname = dr.Name,
                             opname = op.Name,
                             opid = op.ID,
@@ -37,7 +37,7 @@ namespace LuckDraw.Controllers
             {
                 res.Add(new DrawViewModle
                 {
-                    DrawId=item.drawsid,
+                    DrawId = item.drawsid,
                     DrawName = item.drname,
                     OptionName = item.opname,
                     OptionID = item.opid,
@@ -50,9 +50,8 @@ namespace LuckDraw.Controllers
 
         public IActionResult SetDraw(int ID)
         {
-            int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
-            List<Luck> mod = EF.Lucks.Where(a => a.SignID == Userid).ToList();
-            ViewData["drwas"] = EF.Draws.Where(b => b.ID == ID).FirstOrDefault();           
+            var mod = EF.Lucks.Where(a => a.SignID == HttpContext.Session.GetModel<Sign>("User").ID).ToList();
+            ViewData["drwas"] = EF.Draws.Where(b => b.ID == ID).FirstOrDefault();
             return View(mod);
         }
 
@@ -81,6 +80,7 @@ namespace LuckDraw.Controllers
             return Content("保存失败");
         }
 
+        [HttpPost]
         public IActionResult Add(Draw draw)
         {
             draw.SignID = HttpContext.Session.GetModel<Sign>("User").ID;
@@ -97,7 +97,7 @@ namespace LuckDraw.Controllers
         {
             var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
             var info = EF.LuckDraws.Where(x => x.DrawID == ID);
-            if (info.ToList().Count() > 0)
+            if (info.ToList().Count > 0)
                 foreach (var item in info)
                     EF.Remove(item);
 

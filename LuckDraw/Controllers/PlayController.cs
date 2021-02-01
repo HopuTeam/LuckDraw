@@ -7,17 +7,14 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class PlayController : Controller
+    public class PlayController : BaseController
     {
         private CoreEntities EF { get; }
-        public PlayController(CoreEntities _ef)
+        public PlayController(CoreEntities _ef) : base(_ef)
         {
             EF = _ef;
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
+
         public IActionResult Repeat(int ID)
         {
             var DrawName = (from luckdraw in EF.LuckDraws

@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private CoreEntities EF { get; }
-        public UserController(CoreEntities _ef)
+        public UserController(CoreEntities _ef) : base(_ef)
         {
             EF = _ef;
         }
