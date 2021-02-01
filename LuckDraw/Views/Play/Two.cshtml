@@ -30,7 +30,7 @@
 
             $.post("/Play/Updata", { ID: @Model.ID }, function (res) {
                 layer.close(win);
-                var content1, content2 = "";
+                var content1 = "", content2 = "";
                 for (item of res) {
                     //判断时间是否为空
                     //debugger
