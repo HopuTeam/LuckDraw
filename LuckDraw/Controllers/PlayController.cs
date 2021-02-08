@@ -54,7 +54,7 @@ namespace LuckDraw.Controllers
                 elements.Add(new KeyValuePair<int, int>(item.id, item.Weigh));
             }
             Random ra = new Random();
-            //计算权限，最终结果加一
+            //计算权重，最终结果加一
             int allRate = 1;
             foreach (var item in elements)
             {
