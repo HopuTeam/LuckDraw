@@ -47,6 +47,10 @@ namespace LuckDraw.Controllers
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
+            if (model.Count<1)
+            {
+                return Content($"当前没有项目");
+            }
             List<KeyValuePair<int, int>> elements = new List<KeyValuePair<int, int>>();
             //将查到的数据的id和权重填到elements中
             foreach (var item in model)
@@ -118,7 +122,7 @@ namespace LuckDraw.Controllers
                          cishu = luckdrawdb.Number
                      }
 
-            ).ToList();
+            ).ToList();         
             return Json(a);
         }
 
