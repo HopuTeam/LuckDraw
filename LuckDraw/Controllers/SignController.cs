@@ -19,9 +19,7 @@ namespace LuckDraw.Controllers
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (context.HttpContext.Session.GetModel<Sign>("User") != null)
-            {
                 context.Result = new RedirectResult("/Home/Index");
-            }
         }
 
         [HttpGet]
@@ -32,22 +30,16 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult Sign(Sign sign)
         {
-            Sign mod;
             sign.Password = Security.MD5Encrypt32(sign.Password);
-            if (sign.Account.Contains("@"))
-            {
-                mod = (from s in EF.Signs
-                       where s.Email == sign.Account && s.Password == sign.Password
-                       select s).FirstOrDefault();
-            }
-            else
-            {
+            Sign mod = (from s in EF.Signs
+                        where s.Email == sign.Account && s.Password == sign.Password
+                        select s).FirstOrDefault();
+
+            if (mod == null)
                 mod = (from s in EF.Signs
                        where s.Account == sign.Account && s.Password == sign.Password
                        select s).FirstOrDefault();
-            }
-
-            if (mod == null)
+            else if (mod == null)
                 return Content("用户名或密码错误");
 
             HttpContext.Session.SetModel("User", mod);
@@ -93,7 +85,7 @@ namespace LuckDraw.Controllers
             var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Email == sign.Email);
             if (mod == null)
                 return Content("邮箱或帐号错误");
-            else if (mod.Status==false)
+            else if (mod.Status == false)
                 return Content("邮箱验证未通过，请联系管理员");
 
             mod.Password = Security.MD5Encrypt32(sign.Password);
@@ -109,10 +101,13 @@ namespace LuckDraw.Controllers
         {
             Random random = new Random();
             HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
-            if (EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail) == null)
+            var mod = EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail);
+            if (mod == null)
                 return Content("邮箱或帐号错误");
+            else if (mod.Status == false)
+                return Content("邮箱验证未通过，请联系管理员");
 
-            if (MailExt.SendMail(mail, "找回密码操作", $"尊敬的用户 { Account }：<br />您正在进行<span style='color:red;'>找回密码</span>操作！<br />本次操作的验证码是：<span style='color:red;'>{ HttpContext.Session.GetString("Code") }</span>。<br />请注意谨防验证码泄露，保护账号安全！"))
+            if (MailExt.SendMail(mod.Account, mod.Email, "找回密码操作", $"尊敬的用户{ mod.Account }：<br />您正在进行<span style='color:red;'>找回密码</span>操作！<br />本次操作的验证码是：<span style='color:red;'>{ HttpContext.Session.GetString("Code") }</span>。<br />请注意谨防验证码泄露，保护账号安全！"))
                 return Content("success");
             else
                 return Content("邮件发送失败");

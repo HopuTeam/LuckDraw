@@ -1,7 +1,7 @@
-﻿using LuckDraw.Models;
+﻿using LuckDraw.Handles;
+using LuckDraw.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using LuckDraw.Handles;
 
 namespace LuckDraw.Controllers
 {
