@@ -14,29 +14,50 @@
             line-height: 200px;
             text-align: center;
         }
+
+        .inp-box {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <form id="submit">
-        <div class="form-group">
-            <label>账号:</label>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">账号</span>
+            </div>
             <input type="text" required class="form-control" id="Account" placeholder="请输入账号">
         </div>
-        <div class="form-group">
-            <label>密码:</label>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">密码</span>
+            </div>
             <input type="password" required class="form-control" id="Password" placeholder="请输入密码">
         </div>
-        <div class="form-group">
-            <label>确认密码:</label>
-            <input type="password" required class="form-control" id="PWD" placeholder="请确认密码">
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">确认密码</span>
+            </div>
+            <input type="password" required class="form-control" id="PWD" placeholder="请再次输入密码">
         </div>
-        <div class="form-group">
-            <label>邮箱:</label>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">邮箱</span>
+            </div>
             <input type="email" required class="form-control" id="Email" placeholder="请输入邮件地址">
         </div>
-        <div class="btn-group">
-            <button class="btn btn-primary" type="submit">注册</button>
-            <button class="btn btn-secondary" type="button" id="btnClose">取消</button>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">验证码</span>
+            </div>
+            <input type="text" required class="form-control" id="Code" placeholder="请输入验证码">
+            <div class="input-group-append">
+                <button type="button" id="getCode" class="input-group-text">获取</button>
+            </div>
+        </div>
+        <div style="margin-top:10px;">
+            <button class="btn btn-primary btn-block" type="submit">注册</button>
+            <button class="btn btn-secondary btn-block" type="button" id="btnClose">取消</button>
         </div>
     </form>
     <script src="~/Scripts/jquery-3.5.1.min.js"></script>
@@ -70,6 +91,48 @@
             };
             return false;
         });
+
+        $("#getCode").click(function () {
+            if ($("#Email").val() == "") {
+                layer.alert("请填写邮箱");
+            } else {
+                layer.load(2, { shade: false });
+                var data = {
+                    Account: $("#Account").val(),
+                    mail: $("#Email").val(),
+                    type: 1
+                };
+                settime();
+                $.post("/Sign/SendMail", data, function (res) {
+                    setTimeout(function () {
+                        layer.closeAll('loading');
+                    }, 350);
+                    if (res == "success") {
+                        layer.alert("验证码发送成功");
+                    } else {
+                        layer.alert(res);
+                    };
+                });
+            }
+        });
+
+        //倒计时
+        var countdown = 60;
+        function settime() {
+            if (countdown == 0) {
+                $("#getCode").removeAttr("disabled");
+                $("#getCode").text("获取");
+                countdown = 60;
+                return;
+            } else {
+                $("#getCode").attr("disabled", true);
+                $("#getCode").text(countdown);
+                countdown--;
+            }
+            setTimeout(function () {
+                settime();
+            }, 1000)
+        }
 
         $("#btnClose").click(function () {
             window.parent.closeFrame();

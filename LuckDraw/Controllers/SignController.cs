@@ -52,13 +52,16 @@ namespace LuckDraw.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Register(Sign sign)
+        public IActionResult Register(string Code, Sign sign)
         {
             if (EF.Signs.FirstOrDefault(x => x.Account == sign.Account) != null)
                 return Content("用户名被占用");
 
             if (EF.Signs.FirstOrDefault(x => x.Email == sign.Email) != null)
                 return Content("邮箱已被绑定");
+
+            if (Code != HttpContext.Session.GetString("Code"))
+                return Content("验证码错误");
 
             sign.Status = false;
             sign.Identity = 0;
@@ -97,17 +100,30 @@ namespace LuckDraw.Controllers
         }
 
         [HttpPost]
-        public IActionResult SendMail(string Account, string mail)
+        public IActionResult SendMail(string Account, string mail, int type)
         {
             Random random = new Random();
             HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
-            var mod = EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail);
-            if (mod == null)
-                return Content("邮箱或帐号错误");
-            else if (mod.Status == false)
-                return Content("邮箱验证未通过，请联系管理员");
+            
+            string name = string.Empty;
+            switch (type)
+            {
+                case 0:
+                    var mod = EF.Signs.FirstOrDefault(x => x.Account == Account && x.Email == mail);
+                    if (mod == null)
+                        return Content("邮箱或帐号错误");
+                    else if (mod.Status == false)
+                        return Content("邮箱验证未通过，请联系管理员");
+                    name = "找回密码";
+                    break;
+                case 1:
+                    name = "注册账号";
+                    break;
+                default:
+                    return Content("数据非法");
+            }
 
-            if (MailExt.SendMail(mod.Account, mod.Email, "找回密码操作", $"尊敬的用户{ mod.Account }：<br />您正在进行<span style='color:red;'>找回密码</span>操作！<br />本次操作的验证码是：<span style='color:red;'>{ HttpContext.Session.GetString("Code") }</span>。<br />请注意谨防验证码泄露，保护账号安全！"))
+            if (MailExt.SendMail(Account, mail, $"{ name }操作", $"尊敬的用户{ Account }：<br />您正在进行<span style='color:red;'>{ name }</span>操作！<br />本次操作的验证码是：<span style='color:red;'>{ HttpContext.Session.GetString("Code") }</span>。<br />请注意谨防验证码泄露，保护账号安全！"))
                 return Content("success");
             else
                 return Content("邮件发送失败");

@@ -14,29 +14,44 @@
             line-height: 200px;
             text-align: center;
         }
+
+        .inp-box {
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <form id="submit">
-        <div class="form-group">
-            <label>账号:</label>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">账号</span>
+            </div>
             <input type="text" required class="form-control" id="Account" placeholder="请输入账号">
         </div>
-        <div class="form-group">
-            <label>邮箱:</label>
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">邮箱</span>
+            </div>
             <input type="email" required class="form-control" id="Email" placeholder="请输入邮件地址">
         </div>
-        <div class="form-group">
-            <label>验证码(<a id="getCode" style="color:blue;" href="#getCode">获取验证码</a>):</label>
-            <input type="text" required class="form-control" id="Code" placeholder="点击链接获取验证码">
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">验证码</span>
+            </div>
+            <input type="text" required class="form-control" id="Code" placeholder="请输入验证码">
+            <div class="input-group-append">
+                <button type="button" id="getCode" class="input-group-text">获取</button>
+            </div>
         </div>
-        <div class="form-group">
-            <label>密码:</label>
-            <input type="password" required class="form-control" id="Password" placeholder="请输入密码">
+        <div class="input-group inp-box">
+            <div class="input-group-prepend">
+                <span class="input-group-text">新密码</span>
+            </div>
+            <input type="password" required class="form-control" id="Password" placeholder="请输入新密码">
         </div>
-        <div class="btn-group">
-            <button class="btn btn-primary" type="submit">修改密码</button>
-            <button class="btn btn-secondary" type="button" id="btnClose">取消</button>
+        <div style="margin-top:10px;">
+            <button class="btn btn-primary btn-block" type="submit">修改密码</button>
+            <button class="btn btn-secondary btn-block" type="button" id="btnClose">取消</button>
         </div>
     </form>
     <script src="~/Scripts/jquery-3.5.1.min.js"></script>
@@ -76,7 +91,9 @@
                 var data = {
                     Account: $("#Account").val(),
                     mail: $("#Email").val(),
+                    type: 0
                 };
+                settime();
                 $.post("/Sign/SendMail", data, function (res) {
                     setTimeout(function () {
                         layer.closeAll('loading');
@@ -85,10 +102,28 @@
                         layer.alert("验证码发送成功");
                     } else {
                         layer.alert(res);
-                    };
+                    }
                 });
             }
         });
+
+        //倒计时
+        var countdown = 60;
+        function settime() {
+            if (countdown == 0) {
+                $("#getCode").removeAttr("disabled");
+                $("#getCode").text("获取");
+                countdown = 60;
+                return;
+            } else {
+                $("#getCode").attr("disabled", true);
+                $("#getCode").text(countdown);
+                countdown--;
+            }
+            setTimeout(function () {
+                settime();
+            }, 1000)
+        }
 
         $("#btnClose").click(function () {
             window.parent.closeFrame();
