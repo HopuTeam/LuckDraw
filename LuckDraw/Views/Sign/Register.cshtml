@@ -72,6 +72,7 @@
                     Account: $("#Account").val(),
                     Password: $("#Password").val(),
                     Email: $("#Email").val(),
+                    Code: $("#Code").val()
                 };
                 $.post("/Sign/Register", data, function (res) {
                     setTimeout(function () {
