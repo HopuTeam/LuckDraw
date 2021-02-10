@@ -50,7 +50,16 @@ namespace LuckDraw.Controllers
 
         public IActionResult SetDraw(int ID)
         {
-            var mod = EF.Lucks.Where(a => a.SignID == HttpContext.Session.GetModel<Sign>("User").ID).ToList();
+            int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
+            var optionid = (from d in EF.Draws
+                            where d.ID == ID
+                            select d.SignID
+        ).FirstOrDefault();
+            if (optionid != Userid)//确认当前抽奖项目属于当前登录的用户
+            {
+                return Redirect("/Draw/index");
+            }
+            var mod = EF.Lucks.Where(a => a.SignID == Userid).ToList();
             ViewData["drwas"] = EF.Draws.Where(b => b.ID == ID).FirstOrDefault();
             return View(mod);
         }

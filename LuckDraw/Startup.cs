@@ -39,7 +39,7 @@ namespace LuckDraw
             app.UseStaticFiles();
             app.UseMvc(options =>
             {
-                options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");
+                options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");              
             });
         }
     }

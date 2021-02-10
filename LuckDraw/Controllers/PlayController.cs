@@ -16,7 +16,15 @@ namespace LuckDraw.Controllers
         }
 
         public IActionResult Repeat(int ID)
-        {
+        {         
+            var optionid = (from d in EF.Draws
+                            where d.ID == ID
+                            select d.SignID
+               ).FirstOrDefault();
+            if (optionid != HttpContext.Session.GetModel<Sign>("User").ID)//确认当前抽奖项目属于当前登录的用户
+            {
+                return Redirect("/Draw/index");
+            }
             var DrawName = (from luckdraw in EF.LuckDraws
                             where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
@@ -35,7 +43,7 @@ namespace LuckDraw.Controllers
         /// <returns></returns>
         public IActionResult One(int Drawid, int Second = 1)
         {
-            int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
+            int Userid = HttpContext.Session.GetModel<Sign>("User").ID;        
             var model = (from luckdraw in EF.LuckDraws
                          where luckdraw.DrawID == Drawid
                          join luck1 in EF.Lucks on luckdraw.LuckID equals luck1.ID

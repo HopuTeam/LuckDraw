@@ -29,7 +29,6 @@ namespace LuckDraw.Controllers
             {
                 if (mod.Email == sign.Email)
                     return Content("未进行任何修改");
-
                 mod.Email = sign.Email;
                 mod.Status = false;
             }
