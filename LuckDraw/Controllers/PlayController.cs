@@ -47,7 +47,7 @@ namespace LuckDraw.Controllers
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
-            if (model.Count<1)
+            if (model.Count < 1)
             {
                 return Content($"当前没有项目");
             }
@@ -122,7 +122,7 @@ namespace LuckDraw.Controllers
                          cishu = luckdrawdb.Number
                      }
 
-            ).ToList();         
+            ).ToList();
             return Json(a);
         }
 

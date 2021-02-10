@@ -26,6 +26,10 @@ namespace LuckDraw.Handles
                 message.Body = new TextPart(TextFormat.Html) { Text = content };//内容(HTML格式)
                 using (var client = new SmtpClient())
                 {
+                    // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
+                    client.ServerCertificateValidationCallback = (mysender, certificate, chain, sslPolicyErrors) => { return true; };
+                    client.CheckCertificateRevocation = false;
+
                     client.Connect("smtp.ym.163.com", 994, SecureSocketOptions.SslOnConnect);//SMTP地址、端口、加密方式
                     client.Authenticate("work@echocode.club", "9qC3uNQJRy");
                     client.Send(message);
@@ -36,6 +40,7 @@ namespace LuckDraw.Handles
             }
             catch// (Exception ex)
             {
+                // Console.WriteLine(ex.ToString());
                 return false;
             }
         }
