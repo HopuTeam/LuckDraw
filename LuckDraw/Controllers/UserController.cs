@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Text;
 
 namespace LuckDraw.Controllers
 {
@@ -41,11 +42,72 @@ namespace LuckDraw.Controllers
                 }
                 mod.Password = Security.MD5Encrypt32(sign.Password);
             }
-            if (EF.SaveChanges() <= 0)
-                return Content("数据更新异常");
 
-            HttpContext.Session.SetModel("User", EF.Signs.FirstOrDefault(x => x.ID == ID));
-            return Content("success");
+            try
+            {
+                EF.SaveChanges();
+                HttpContext.Session.SetModel("User", EF.Signs.FirstOrDefault(x => x.ID == ID));
+                return Content("success");
+            }
+            catch
+            {
+                return Content("数据更新异常");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult EditUser(int ID)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+            return View(EF.Signs.FirstOrDefault(x => x.ID == ID));
+        }
+        [HttpPost]
+        public IActionResult EditUser(Sign sign)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+
+            try
+            {
+                var mod = EF.Signs.FirstOrDefault(x => x.ID == sign.ID);
+                mod.Account = sign.Account;
+                mod.Email = sign.Email;
+                mod.Password = Security.MD5Encrypt32(sign.Password);
+                mod.Identity = sign.Identity;
+                EF.SaveChanges();
+
+                return Content("success");
+            }
+            catch
+            {
+                return Content("修改失败，请稍后再试");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AddUser()
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddUser(Sign sign)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+            try
+            {
+                EF.Add(sign);
+                EF.SaveChanges();
+
+                return Json(new { code = 0, status = true, message = "添加成功" });
+            }
+            catch
+            {
+                return Json(new { code = 0, status = false, message = "系统错误，请稍后再试" });
+            }
         }
 
         [HttpPost]
@@ -55,22 +117,162 @@ namespace LuckDraw.Controllers
             return Content("success");
         }
 
+        //后台删除用户
+        [HttpPost]
+        public IActionResult DelUser(int ID)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+
+            if (ID == 1)
+                return Content("此账户禁止被修改");
+
+            if (EF.Signs.Where(x => x.Identity == 1).ToList().Count <= 1)
+                return Content("系统至少要存在一个管理员");
+
+            if (ID == HttpContext.Session.GetModel<Sign>("User").ID)
+                return Content("管理员不允许删除自己");
+
+            var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
+            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
+            if (info.ToList().Count > 0)
+                foreach (var item in info)
+                    EF.Remove(item);
+            EF.Remove(mod);
+
+            var draw = EF.Draws.Where(x => x.SignID == ID);
+            foreach (var item in draw)
+                EF.Remove(EF.LuckDraws.Where(x => x.DrawID == item.ID));
+            EF.Remove(draw);
+
+            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID));
+
+            try
+            {
+                EF.SaveChanges();
+                return Content("success");
+            }
+            catch
+            {
+                return Content("未知错误");
+            }
+        }
+        //前台用户自主注销
+        [HttpPost]
+        public IActionResult ZhuXiao()
+        {
+            var ID = HttpContext.Session.GetModel<Sign>("User").ID;
+            var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
+            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
+            if (info.ToList().Count > 0)
+                foreach (var item in info)
+                    EF.Remove(item);
+            EF.Remove(mod);
+
+            var draw = EF.Draws.Where(x => x.SignID == ID);
+            foreach (var item in draw)
+                EF.Remove(EF.LuckDraws.Where(x => x.DrawID == item.ID));
+            EF.Remove(draw);
+
+            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
+
+            try
+            {
+                EF.SaveChanges();
+                return Content("success");
+            }
+            catch
+            {
+                return Content("未知错误");
+            }
+        }
+
+        [HttpPost]
+        public IActionResult GetAcc()
+        {
+            if (HttpContext.Session.GetModel<Sign>("User").Identity == 1)
+                return Content("accept");
+            return Content("empty data");
+        }
+
+        public IActionResult Manager()
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return View("/Views/Error/Index.cshtml");
+            return View();
+        }
+        [HttpPost]
+        public IActionResult MagList(int page = 1, int limit = 10)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return Json(new { code = 0, count = 0, msg = "账户权限异常" });
+            var mod = (from s in EF.Signs
+                       select new
+                       {
+                           s.ID,
+                           s.Account,
+                           s.Email,
+                           s.Status,
+                           s.Identity
+                       }).ToList();
+            var info = new
+            {
+                code = 0,
+                msg = "",
+                count = mod.Count,
+                data = mod.Skip((page - 1) * limit).Take(limit)
+            };
+            return Json(info);
+        }
+
+        [HttpPost]
+        public IActionResult SwichStatus(int SignID)
+        {
+            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+                return Content("账户权限异常");
+
+            if (SignID == 1)
+                return Content("此账户禁止被修改");
+
+            if (EF.Signs.Where(x => x.Identity == 1).ToList().Count <= 1)
+                return Content("系统至少要存在一个管理员");
+
+            if (SignID == HttpContext.Session.GetModel<Sign>("User").ID)
+                return Content("管理员不允许更改自身权限");
+
+            var mod = EF.Signs.FirstOrDefault(x => x.ID == SignID);
+            if (mod.Status)
+                mod.Status = false;
+            else
+                mod.Status = true;
+
+            try
+            {
+                EF.SaveChanges();
+                return Content("Ok");
+            }
+            catch
+            {
+                return Content("数据异常");
+            }
+        }
+
         [HttpGet]
         public IActionResult Auth(string Code, Sign sign)
         {
             if (Code != HttpContext.Session.GetString("Code"))
-                return Content("<script>alert('认证码错误');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
+                return Content("<script>alert('认证码错误');window.location.href='/User/Index';</script>", "text/html", Encoding.UTF8);
 
             var mod = EF.Signs.FirstOrDefault(x => x.Account == sign.Account && x.Email == sign.Email);
             if (mod == null)
-                return Content("<script>alert('认证信息异常');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
+                return Content("<script>alert('认证信息异常');window.location.href='/User/Index';</script>", "text/html", Encoding.UTF8);
 
             mod.Status = true;
 
             if (EF.SaveChanges() > 0)
-                return Content("<script>alert('认证成功');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
+                return Content("<script>alert('认证成功');window.location.href='/User/Index';</script>", "text/html", Encoding.UTF8);
             else
-                return Content("<script>alert('认证失败，请重试');window.location.href='/User/Index';</script>", "text/html", System.Text.Encoding.UTF8);
+                return Content("<script>alert('认证失败，请重试');window.location.href='/User/Index';</script>", "text/html", Encoding.UTF8);
         }
 
         [HttpPost]

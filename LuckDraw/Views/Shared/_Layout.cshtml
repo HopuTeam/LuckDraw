@@ -32,6 +32,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/User/Index"><i class="fas fa-cog"></i>个人设置</a>
                 </li>
+                <li hidden id="Mag" class="nav-item">
+                    <a class="nav-link" href="/User/Manager"><i class="fas fa-users"></i>用户管理</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#Logout" id="Logout"><i class="fas fa-running"></i>退出</a>
                 </li>
@@ -73,6 +76,12 @@
             setTimeout(function () {
                 layer.closeAll('loading');
             }, 300);
+        });
+
+        $.post("/User/GetAcc", function (res) {
+            if (res == "accept") {
+                $("#Mag").removeAttr("hidden");
+            }
         });
     </script>
     @RenderSection("scripts", false)

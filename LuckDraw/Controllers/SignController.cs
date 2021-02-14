@@ -18,7 +18,8 @@ namespace LuckDraw.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.Session.GetModel<Sign>("User") != null)
+            var user = context.HttpContext.Session.GetModel<Sign>("User");
+            if (user != null && user.Identity != 1)
                 context.Result = new RedirectResult("/Home/Index");
         }
 
@@ -104,7 +105,7 @@ namespace LuckDraw.Controllers
         {
             Random random = new Random();
             HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
-            
+
             string name = string.Empty;
             switch (type)
             {

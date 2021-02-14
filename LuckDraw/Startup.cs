@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace LuckDraw
 {
@@ -21,7 +22,7 @@ namespace LuckDraw
         {
             services.AddMvc(options =>
             {
-                //options.Filters.Add(typeof(AuthAttribute));
+                //options.Filters.Add(typeof(ErrorAttribute));
                 options.EnableEndpointRouting = false;
             });
             services.AddDbContext<CoreEntities>(options =>
@@ -34,12 +35,24 @@ namespace LuckDraw
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            //开发环境直接展示错误堆栈的页面 500 only
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                //正式环境自定义错误页
+                app.UseExceptionHandler("/Views/Error/Index.cshtml");
+                app.UseHsts();
+            }
             app.UseRouting();
             app.UseSession();
             app.UseStaticFiles();
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");//错误页跳转
             app.UseMvc(options =>
             {
-                options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");              
+                options.MapRoute("Default", "{Controller=Sign}/{Action=Index}");
             });
         }
     }

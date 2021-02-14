@@ -60,9 +60,14 @@ namespace LuckDraw.Controllers
         {
             var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
             var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
-            if (info.ToList().Count() > 0)
+            if (info.ToList().Count > 0)
+            {
                 foreach (var item in info)
+                {
+                    EF.Remove(EF.LuckDraws.Where(x => x.LuckID == item.ID));
                     EF.Remove(item);
+                }
+            }
 
             EF.Remove(mod);
             if (EF.SaveChanges() > 0)
