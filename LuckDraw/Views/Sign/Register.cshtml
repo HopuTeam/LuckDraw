@@ -103,13 +103,13 @@
                     mail: $("#Email").val(),
                     type: 1
                 };
-                settime();
                 $.post("/Sign/SendMail", data, function (res) {
                     setTimeout(function () {
                         layer.closeAll('loading');
                     }, 350);
                     if (res == "success") {
                         layer.alert("验证码发送成功");
+                        settime();
                     } else {
                         layer.alert(res);
                     };
@@ -130,7 +130,7 @@
                 $("#getCode").text(countdown);
                 countdown--;
             }
-            setTimeout(function () {
+            setTimeout(function () {//一秒钟执行一次
                 settime();
             }, 1000)
         }

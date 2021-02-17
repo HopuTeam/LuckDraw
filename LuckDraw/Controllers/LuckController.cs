@@ -59,12 +59,13 @@ namespace LuckDraw.Controllers
         public IActionResult Delete(int ID)
         {
             var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
-            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
-            if (info.ToList().Count > 0)
+            var info = EF.Lucks.Where(x => x.ParentID == mod.ID).ToList();
+            if (info.Count > 0)
             {
                 foreach (var item in info)
                 {
-                    EF.Remove(EF.LuckDraws.Where(x => x.LuckID == item.ID));
+                    var del = EF.LuckDraws.FirstOrDefault(x => x.LuckID == item.ID);
+                    EF.Remove(del);
                     EF.Remove(item);
                 }
             }

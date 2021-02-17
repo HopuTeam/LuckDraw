@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class SignController : Controller
+    public class SignController : Controller 
     {
         private CoreEntities EF { get; }
         public SignController(CoreEntities _ef)
@@ -35,14 +35,16 @@ namespace LuckDraw.Controllers
             Sign mod = (from s in EF.Signs
                         where s.Email == sign.Account && s.Password == sign.Password
                         select s).FirstOrDefault();
-
             if (mod == null)
+            {
                 mod = (from s in EF.Signs
                        where s.Account == sign.Account && s.Password == sign.Password
                        select s).FirstOrDefault();
-            else if (mod == null)
-                return Content("用户名或密码错误");
-
+                if (mod == null)
+                {
+                    return Content("用户名或密码错误");
+                }
+            }       
             HttpContext.Session.SetModel("User", mod);
             return Content("success");
         }
@@ -105,7 +107,6 @@ namespace LuckDraw.Controllers
         {
             Random random = new Random();
             HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
-
             string name = string.Empty;
             switch (type)
             {
