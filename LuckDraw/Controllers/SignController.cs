@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace LuckDraw.Controllers
 {
-    public class SignController : Controller 
+    public class SignController : Controller
     {
         private CoreEntities EF { get; }
         public SignController(CoreEntities _ef)
@@ -44,7 +44,7 @@ namespace LuckDraw.Controllers
                 {
                     return Content("用户名或密码错误");
                 }
-            }       
+            }
             HttpContext.Session.SetModel("User", mod);
             return Content("success");
         }

@@ -47,12 +47,12 @@
                     layer.closeAll('loading');
                 }, 350);
                 if (res == "success") {
-                    layer.alert("登录成功");
+                    layer.msg("登录成功");
                     setTimeout(function () {
                         window.location.href = "/Home/Index";
                     }, 1500);
                 } else {
-                    layer.alert(res);
+                    layer.msg(res);
                 };
             });
             return false;

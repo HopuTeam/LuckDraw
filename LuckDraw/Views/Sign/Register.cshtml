@@ -79,23 +79,23 @@
                         layer.closeAll('loading');
                     }, 350);
                     if (res == "success") {
-                        layer.alert("注册成功");
+                        layer.msg("注册成功");
                         setTimeout(function () {
                             window.parent.closeFrame();
                         }, 1500);
                     } else {
-                        layer.alert(res);
+                        layer.msg(res);
                     };
                 });
             } else {
-                layer.alert('两次输入的密码不一致');
+                layer.msg('两次输入的密码不一致');
             };
             return false;
         });
 
         $("#getCode").click(function () {
             if ($("#Email").val() == "") {
-                layer.alert("请填写邮箱");
+                layer.msg("请填写邮箱");
             } else {
                 layer.load(2, { shade: false });
                 var data = {
@@ -103,15 +103,15 @@
                     mail: $("#Email").val(),
                     type: 1
                 };
+                settime();
                 $.post("/Sign/SendMail", data, function (res) {
                     setTimeout(function () {
                         layer.closeAll('loading');
                     }, 350);
                     if (res == "success") {
-                        layer.alert("验证码发送成功");
-                        settime();
+                        layer.msg("验证码发送成功");
                     } else {
-                        layer.alert(res);
+                        layer.msg(res);
                     };
                 });
             }
@@ -122,7 +122,7 @@
         function settime() {
             if (countdown == 0) {
                 $("#getCode").removeAttr("disabled");
-                $("#getCode").text("获取");
+                $("#getCode").text("重新获取");
                 countdown = 60;
                 return;
             } else {

@@ -47,11 +47,26 @@
                 <span class="input-group-text">权限</span>
             </div>
             <select class="form-control" id="Identity">
-                <option value="0">用户</option>
-                <option value="1">管理员</option>
+                @switch (@Model.Identity)
+                {
+                    case 0:
+                        <option selected value="0">用户</option>
+                        <option value="1">管理员</option>
+                        break;
+                    case 1:
+                        <option value="0">用户</option>
+                        <option selected value="1">管理员</option>
+                        break;
+                }
+                @*@if (Model.Identity == 0)
+                    {
+                        <option selected value="0">用户</option>
+                        <option value="1">管理员</option>
+                    }*@
             </select>
         </div>
         <div style="margin-top:10px;">
+
             <button class="btn btn-primary btn-block" type="submit">修改</button>
             <button class="btn btn-secondary btn-block" type="button" id="btnClose">取消</button>
         </div>

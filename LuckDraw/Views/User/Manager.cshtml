@@ -63,7 +63,7 @@
                         title: '修改信息',
                         shadeClose: true,
                         shade: [0.45],
-                        area: ['340px', '350px'],
+                        area: ['340px', '360px'],
                         content: '/User/EditUser?ID=' + obj.data.id,
                     });
                 }
@@ -85,7 +85,7 @@
             layer.load(2, { shade: false });
             $.post("/User/SwichStatus", { SignID: this.value }, function (res) {
                 window.location.reload();
-                layer.alert(res);
+                layer.msg(res);
                 setTimeout(function () {
                     layer.closeAll('loading');
                 }, 350);

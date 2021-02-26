@@ -72,12 +72,12 @@
                     layer.closeAll('loading');
                 }, 350);
                 if (res == "success") {
-                    layer.alert("重置成功");
+                    layer.msg("重置成功");
                     setTimeout(function () {
                         window.parent.closeFrame();
                     }, 1500);
                 } else {
-                    layer.alert(res);
+                    layer.msg(res);
                 };
             });
             return false;
@@ -85,7 +85,7 @@
 
         $("#getCode").click(function () {
             if ($("#Account").val() == "" || $("#Email").val() == "") {
-                layer.alert("请填写邮箱和账号");
+                layer.msg("请填写邮箱和账号");
             } else {
                 layer.load(2, { shade: false });
                 var data = {
@@ -99,9 +99,9 @@
                         layer.closeAll('loading');
                     }, 350);
                     if (res == "success") {
-                        layer.alert("验证码发送成功");
+                        layer.msg("验证码发送成功");
                     } else {
-                        layer.alert(res);
+                        layer.msg(res);
                     }
                 });
             }
@@ -112,7 +112,7 @@
         function settime() {
             if (countdown == 0) {
                 $("#getCode").removeAttr("disabled");
-                $("#getCode").text("获取");
+                $("#getCode").text("重新获取");
                 countdown = 60;
                 return;
             } else {
