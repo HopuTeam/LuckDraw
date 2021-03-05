@@ -61,8 +61,8 @@ class="btn btn-success">${item.name}（${item.cishu}）</button>`;
             var St = $('#inpVal').val();
             $.post('/Play/One', { Drawid: @Model.Drawid, Second: St }, (res) => {
                 if (res == "0") {
-                    layer.alert(`抽奖项目为空`);
-                } else {
+                    layer.alert(`当前没有抽奖项`);
+                } else {                    
                     layer.alert(`本次抽取到的人是：${res}`);
                     getdata();
                 };
