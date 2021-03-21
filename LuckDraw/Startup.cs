@@ -27,7 +27,7 @@ namespace LuckDraw
             });
             services.AddDbContext<CoreEntities>(options =>
             {
-                options.UseMySQL(Configuration.GetConnectionString("EFDbConnection"));
+                options.UseMySql(Configuration.GetConnectionString("EFDbConnection"));
             });
             services.AddSession();
         }
