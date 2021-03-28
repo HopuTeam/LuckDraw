@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using System;
 
 namespace LuckDraw
 {
@@ -27,7 +29,7 @@ namespace LuckDraw
             });
             services.AddDbContext<CoreEntities>(options =>
             {
-                options.UseMySql(Configuration.GetConnectionString("EFDbConnection"));
+                options.UseMySql(Configuration.GetConnectionString("EFDbConnection"), new MySqlServerVersion(new Version(5, 6, 50)));
             });
             services.AddSession();
         }
