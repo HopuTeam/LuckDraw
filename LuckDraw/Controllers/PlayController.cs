@@ -142,7 +142,7 @@ namespace LuckDraw.Controllers
                      {
                          id = luckdrawdb.ID
                      }).ToList();
-            if (a.Count() < 0)
+            if (a.Count < 0)
             {
                 return Content("没有数据");
             }
@@ -203,8 +203,7 @@ namespace LuckDraw.Controllers
         public IActionResult NonLucky(int ID)
         {
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
-            var a = mod.Count();
-            if (a == 0)
+            if (mod.Count == 0)
                 return Content("没了");
 
             // 定义权重数组
@@ -228,12 +227,11 @@ namespace LuckDraw.Controllers
                                      //抽取到的幸运观众
             string Name = (from luname in EF.Lucks
                            where luname.ID == luckid
-                           select luname.Name
-                           ).FirstOrDefault();//幸运观众的名字
+                           select luname.Name).FirstOrDefault();//幸运观众的名字
             var EideTime = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luckid && x.DrawID == ID);//给幸运观众加抽中时间
             EideTime.EntryTime = DateTime.Now;
             EF.SaveChanges();
-            return Content($"抽奖成功,恭喜 { Name } 同学");
+            return Content($"抽奖成功,抽中了 {Name}");
         }
 
         //移除

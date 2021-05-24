@@ -26,20 +26,14 @@ namespace LuckDraw.Controllers
         {
             var ID = HttpContext.Session.GetModel<Sign>("User").ID;
             var mod = EF.Signs.FirstOrDefault(x => x.ID == ID);
-            if (sign.Password == null)
+            if (mod.Email != sign.Email)
             {
-                if (mod.Email == sign.Email)
-                    return Content("未进行任何修改");
                 mod.Email = sign.Email;
                 mod.Status = false;
             }
-            else
+
+            if (sign.Password != null)
             {
-                if (mod.Email != sign.Email)
-                {
-                    mod.Email = sign.Email;
-                    mod.Status = false;
-                }
                 mod.Password = Security.MD5Encrypt32(sign.Password);
             }
 
@@ -49,9 +43,9 @@ namespace LuckDraw.Controllers
                 HttpContext.Session.SetModel("User", EF.Signs.FirstOrDefault(x => x.ID == ID));
                 return Content("success");
             }
-            catch
+            catch (Exception ex)
             {
-                return Content("数据更新异常");
+                return Content(ex.Message);
             }
         }
 
@@ -79,9 +73,9 @@ namespace LuckDraw.Controllers
 
                 return Content("success");
             }
-            catch
+            catch (Exception ex)
             {
-                return Content("修改失败，请稍后再试");
+                return Content(ex.Message);
             }
         }
 
@@ -104,9 +98,9 @@ namespace LuckDraw.Controllers
 
                 return Json(new { code = 0, status = true, message = "添加成功" });
             }
-            catch
+            catch (Exception ex)
             {
-                return Json(new { code = 0, status = false, message = "系统错误，请稍后再试" });
+                return Json(new { code = 0, status = false, message = ex.Message });
             }
         }
 
@@ -152,11 +146,12 @@ namespace LuckDraw.Controllers
                 EF.SaveChanges();
                 return Content("success");
             }
-            catch
+            catch (Exception ex)
             {
-                return Content("未知错误");
+                return Content(ex.Message);
             }
         }
+
         //前台用户自主注销
         [HttpPost]
         public IActionResult ZhuXiao()
@@ -181,9 +176,9 @@ namespace LuckDraw.Controllers
                 EF.SaveChanges();
                 return Content("success");
             }
-            catch
+            catch (Exception ex)
             {
-                return Content("未知错误");
+                return Content(ex.Message);
             }
         }
 
@@ -249,11 +244,11 @@ namespace LuckDraw.Controllers
             try
             {
                 EF.SaveChanges();
-                return Content("Ok");
+                return Content("操作成功");
             }
-            catch
+            catch (Exception ex)
             {
-                return Content("数据异常");
+                return Content(ex.Message);
             }
         }
 
