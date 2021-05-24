@@ -52,7 +52,7 @@ namespace LuckDraw.Handles
                             case "System.Boolean":
                                 {
                                     bool bol = Convert.ToBoolean(value);
-                                    properties[j].SetValue(obj, time, null);
+                                    properties[j].SetValue(obj, bol, null);
                                     break;
                                 }
                             case "System.Int16":
@@ -81,7 +81,7 @@ namespace LuckDraw.Handles
                                 }
                             case "System.Double":
                                 {
-                                    byte dou = Convert.ToDouble(value);
+                                    byte dou = Convert.ToByte(value);
                                     properties[j].SetValue(obj, dou, null);
                                     break;
                                 }
@@ -92,7 +92,7 @@ namespace LuckDraw.Handles
                                     break;
                                 }
                             default:
-                                propertys[j].SetValue(obj, null, null);
+                                properties[j].SetValue(obj, null, null);
                                 break;
                         }
                         list.Add(obj);

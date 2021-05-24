@@ -25,7 +25,7 @@
                 <button onclick="add(@x.ID)" class="btn btn-sm btn-light" style="margin:5px;">添加抽奖项&nbsp;<i class="fas fa-plus-circle"></i></button>
             </div>
             <div class="card-footer">
-                <button class="btn btn-sm btn-info" onclick="upload(@x.ID)" style="margin: 0 5px;">导入&nbsp;<i class="fas fa-file-upload"></i></button>
+                <button class="btn btn-sm btn-info" id="btn-daoru" onclick="upload(@x.ID)" style="margin: 0 5px;">导入&nbsp;<i class="fas fa-file-upload"></i></button>
                 <button class="btn btn-sm btn-success" onclick="mulit(@x.ID)" style="margin: 0 5px;">批量&nbsp;<i class="fas fa-tasks"></i></button>
                 <button class="btn btn-sm btn-warning" onclick="edit(@x.ID)" style="margin: 0 5px;">修改&nbsp;<i class="fas fa-edit"></i></button>
                 <button class="btn btn-sm btn-danger" onclick="del(@x.ID)" style="margin: 0 5px;">删除&nbsp;<i class="fas fa-trash"></i></button>
@@ -49,7 +49,22 @@
         };
 
         function upload(id) {
-
+            console.log("我启动了");
+            layui.use('upload', function () {
+                var  upload = layui.upload;
+                upload.render({
+                    elem: '#btn-daoru'
+                    , url: '/Luck/ExcelAdd'
+                    , acceptMime:'xlsx/xls'
+                    , accept: 'file'//普通文件
+                    , exts: 'xlsx|xls'//后缀
+                    , drag:'true'//拖拽上传
+                    , size: 2000000
+                    , done: function (res) {
+                        layui.alert(res.result);                      
+                    }
+                })
+            });
         }
 
         function mulit(id) {
