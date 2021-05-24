@@ -1,7 +1,9 @@
 ﻿using LuckDraw.Handles;
 using LuckDraw.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LuckDraw.Controllers
@@ -57,7 +59,7 @@ namespace LuckDraw.Controllers
                         SignID = userID,
                         Weigh = 1,
                     };
-                    EF.Lucks.Add(luck);
+                    EF.Lucks.Add(luck);                
                 }
                 EF.SaveChanges();
                 return Content("success");
@@ -119,6 +121,51 @@ namespace LuckDraw.Controllers
             {
                 return Content(ex.Message);
             }
+        }
+
+      
+        public IActionResult ExcelAdd(IFormFile file,int Pid)
+        {
+            List<Luck> lstLuck = new List<Luck>();
+            var userID = HttpContext.Session.GetModel<Sign>("User").ID;
+            try
+            {
+                lstLuck = NPOIHelper.InputExcel<Luck>(file);
+            }
+            catch (Exception ex)
+            {
+
+                return Content("数据错误，请检查表格数据   "+ex);
+            }
+            if (lstLuck.Count>0)
+            {
+                foreach (var item in lstLuck)
+                {
+                    Luck objluck = new Luck();
+                    if (item.Description.Length<1)
+                    {
+                        objluck.Description = item.Name;
+                    }
+                    else
+                    {
+                        objluck.Name = item.Name;
+                    }
+
+                    if (item.Weigh<1)
+                    {
+                        objluck.Weigh = 1;
+                    }
+                    if (item.Weigh > 10)
+                    {
+                        objluck.Weigh = 10;
+                    }
+                    objluck.SignID = userID;
+                    objluck.ParentID = Pid;
+                    EF.Lucks.Add(objluck);
+                }             
+            }
+            EF.SaveChanges();
+            return Content("success");
         }
     }
 }
