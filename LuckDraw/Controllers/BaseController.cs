@@ -15,7 +15,11 @@ namespace LuckDraw.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.Session.GetModel<Sign>("User") == null)
+            if (context.HttpContext.Request.Path == "/User/Logout")
+            {
+                // Add address to whitelist.
+            }
+            else if (context.HttpContext.Session.GetModel<Sign>("User") == null)
             {
                 context.Result = new RedirectResult("/Sign/Index");
             }

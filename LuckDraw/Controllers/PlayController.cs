@@ -19,12 +19,12 @@ namespace LuckDraw.Controllers
         {
             var optionid = (from d in EF.Draws
                             where d.ID == ID
-                            select d.SignID
-               ).FirstOrDefault();
-            if (optionid != HttpContext.Session.GetModel<Sign>("User").ID)//确认当前抽奖项目属于当前登录的用户
-            {
+                            select d.SignID).FirstOrDefault();
+
+            //确认当前抽奖项目属于当前登录的用户
+            if (optionid != HttpContext.Session.GetModel<Sign>("User").ID)
                 return Redirect("/Draw/index");
-            }
+
             var DrawName = (from luckdraw in EF.LuckDraws
                             where luckdraw.DrawID == ID
                             join dr in EF.Draws on luckdraw.DrawID equals dr.ID
@@ -37,6 +37,7 @@ namespace LuckDraw.Controllers
             };
             return View(view);
         }
+
         /// <summary>
         /// 可重复抽奖的方法
         /// </summary>
@@ -55,23 +56,22 @@ namespace LuckDraw.Controllers
                              name = luck1.Name,
                              Weigh = luck1.Weigh
                          }).ToList();
+
             if (model.Count < 1)
-            {
-                return Content($"当前没有项目");
-            }
+                return Content("当前没有项目");
+
             List<KeyValuePair<int, int>> elements = new List<KeyValuePair<int, int>>();
+
             //将查到的数据的id和权重填到elements中
             foreach (var item in model)
-            {
                 elements.Add(new KeyValuePair<int, int>(item.id, item.Weigh));
-            }
+
             Random ra = new Random();
             //计算权重，最终结果加一
             int allRate = 1;
             foreach (var item in elements)
-            {
                 allRate += item.Value;
-            }
+
             //抽到的名字
             string selectedElement = string.Empty;
 
@@ -113,7 +113,6 @@ namespace LuckDraw.Controllers
 
         }
 
-
         /// <summary>
         /// 刷新抽中的次数
         /// </summary>
@@ -128,9 +127,7 @@ namespace LuckDraw.Controllers
                      {
                          name = luck.Name,
                          cishu = luckdrawdb.Number
-                     }
-
-            ).ToList();
+                     }).ToList();
             return Json(a);
         }
 
@@ -144,8 +141,7 @@ namespace LuckDraw.Controllers
                      select new
                      {
                          id = luckdrawdb.ID
-                     }
-                      ).ToList();
+                     }).ToList();
             if (a.Count() < 0)
             {
                 return Content("没有数据");
@@ -166,6 +162,7 @@ namespace LuckDraw.Controllers
                 return Content("次数清空失败");
             }
         }
+
         /// <summary>
         /// 不可重复
         /// </summary>
@@ -202,6 +199,7 @@ namespace LuckDraw.Controllers
             //}
             return Json(list);
         }
+
         public IActionResult NonLucky(int ID)
         {
             var mod = EF.LuckDraws.Where(x => x.DrawID == ID && x.EntryTime == null).ToList();
@@ -253,6 +251,5 @@ namespace LuckDraw.Controllers
             EF.SaveChanges();
             return Content("success");
         }
-
     }
 }

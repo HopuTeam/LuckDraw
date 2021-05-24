@@ -53,8 +53,7 @@ namespace LuckDraw.Controllers
             int Userid = HttpContext.Session.GetModel<Sign>("User").ID;
             var optionid = (from d in EF.Draws
                             where d.ID == ID
-                            select d.SignID
-        ).FirstOrDefault();
+                            select d.SignID).FirstOrDefault();
             if (optionid != Userid)//确认当前抽奖项目属于当前登录的用户
             {
                 return Redirect("/Draw/index");
@@ -67,54 +66,69 @@ namespace LuckDraw.Controllers
         /// <summary>
         /// 保存配置奖项
         /// </summary>
+        /// <param name="id"></param>
+        /// <param name="ids"></param>
         /// <returns></returns>
         [HttpPost]
         public IActionResult Save(int id, int[] ids)
         {
-            List<Models.LuckDraw> mode = EF.LuckDraws.Where(a => a.DrawID == id).ToList();
-            EF.LuckDraws.RemoveRange(mode);
-            for (int i = 0; i < ids.Length; i++)
+            try
             {
-                Models.LuckDraw luckDrawadd = new Models.LuckDraw()
+                List<Models.LuckDraw> mode = EF.LuckDraws.Where(a => a.DrawID == id).ToList();
+                EF.LuckDraws.RemoveRange(mode);
+                for (int i = 0; i < ids.Length; i++)
                 {
-                    DrawID = id,
-                    LuckID = Convert.ToInt32(ids[i])
-                };
-                EF.LuckDraws.Add(luckDrawadd);
-            }
-            if (EF.SaveChanges() > 0)
-            {
+                    Models.LuckDraw luckDrawadd = new Models.LuckDraw()
+                    {
+                        DrawID = id,
+                        LuckID = Convert.ToInt32(ids[i])
+                    };
+                    EF.LuckDraws.Add(luckDrawadd);
+                }
+                EF.SaveChanges();
                 return Content("保存成功");
             }
-            return Content("保存失败");
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
 
         [HttpPost]
         public IActionResult Add(Draw draw)
         {
-            draw.SignID = HttpContext.Session.GetModel<Sign>("User").ID;
-            EF.Draws.Add(draw);
-
-            if (EF.SaveChanges() > 0)
+            try
+            {
+                draw.SignID = HttpContext.Session.GetModel<Sign>("User").ID;
+                EF.Draws.Add(draw);
+                EF.SaveChanges();
                 return Content("success");
-            else
-                return Content("添加失败");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
 
         [HttpPost]
         public IActionResult Delete(int ID)
         {
-            var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
-            var info = EF.LuckDraws.Where(x => x.DrawID == ID);
-            if (info.ToList().Count > 0)
-                foreach (var item in info)
-                    EF.Remove(item);
+            try
+            {
+                var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
+                var info = EF.LuckDraws.Where(x => x.DrawID == ID);
+                if (info.ToList().Count > 0)
+                    foreach (var item in info)
+                        EF.Remove(item);
 
-            EF.Remove(mod);
-            if (EF.SaveChanges() > 0)
+                EF.Remove(mod);
+                EF.SaveChanges();
                 return Content("success");
-            else
-                return Content("删除失败");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
     }
 }
