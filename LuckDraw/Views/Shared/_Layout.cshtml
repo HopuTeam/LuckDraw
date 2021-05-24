@@ -64,18 +64,16 @@
             }, function () {
                 $.post("/User/Logout", function (res) {
                     if (res == "success") {
-                        layer.alert("您已退出账户！");
+                        layer.msg("您已退出账户");
                         setTimeout(function () {
                             window.location.href = "/Sign/Index";
                         }, 1500);
                     } else {
                         layer.alert(res);
                     };
+                    layer.closeAll('loading');
                 });
             });
-            setTimeout(function () {
-                layer.closeAll('loading');
-            }, 300);
         });
 
         $.post("/User/GetAcc", function (res) {

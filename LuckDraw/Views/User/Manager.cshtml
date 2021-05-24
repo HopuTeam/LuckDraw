@@ -1,7 +1,7 @@
 ﻿@model List<LuckDraw.Models.Sign>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewBag.Title = "个人信息";
+    ViewBag.Title = "用户管理";
 }
 <button class="btn btn-primary" id="addUser">添加用户</button>
 <hr />
@@ -51,11 +51,22 @@
                 if (layEvent === 'detail') {
                     layer.msg('查看操作');
                 } else if (layEvent === 'del') {
-                    layer.confirm('真的删除行么', function (index) {
-                        layer.msg('删除操作' + obj.data.id);
-                        obj.del(); //删除对应行（tr）的DOM结构
-                        layer.close(index);
-                        //向服务端发送删除指令
+                    layer.load(2, { shade: false });
+                    layer.confirm('这个是一个不可逆的操作，确定要删除该用户？', {
+                        btn: ['确定', '取消']
+                    }, function (index) {
+                        $.post("/User/DelUser", { ID: obj.data.id }, function (res) {
+                            if (res == "success") {
+                                layer.msg("删除成功");
+                                setTimeout(function () {
+                                    window.location.reload;
+                                }, 1500);
+                            } else {
+                                layer.alert(res);
+                            };
+                            layer.closeAll('loading');
+                            layer.close(index);
+                        });
                     });
                 } else if (layEvent === 'edit') {
                     winOpen = layer.open({
@@ -84,10 +95,10 @@
         form.on('switch(status)', function () {
             layer.load(2, { shade: false });
             $.post("/User/SwichStatus", { SignID: this.value }, function (res) {
-                window.location.reload();
+                layer.closeAll('loading');
                 layer.msg(res);
                 setTimeout(function () {
-                    layer.closeAll('loading');
+                    window.location.reload();
                 }, 350);
             });
         });
