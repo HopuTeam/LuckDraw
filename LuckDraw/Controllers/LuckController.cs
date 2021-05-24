@@ -122,8 +122,7 @@ namespace LuckDraw.Controllers
                 return Content(ex.Message);
             }
         }
-
-      
+  
         public IActionResult ExcelAdd(IFormFile file,int Pid)
         {
             List<Luck> lstLuck = new List<Luck>();
@@ -155,16 +154,22 @@ namespace LuckDraw.Controllers
                     {
                         objluck.Weigh = 1;
                     }
-                    if (item.Weigh > 10)
+                    else if(item.Weigh > 10)
                     {
                         objluck.Weigh = 10;
                     }
+                    else
+                    {
+                        objluck.Weigh = item.Weigh;
+                    }
+
                     objluck.SignID = userID;
                     objluck.ParentID = Pid;
+                    objluck.Name = item.Name;
                     EF.Lucks.Add(objluck);
                 }             
             }
-            EF.SaveChanges();
+            int c= EF.SaveChanges();
             return Content("success");
         }
     }
