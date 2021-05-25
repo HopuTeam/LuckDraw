@@ -51,10 +51,11 @@
                 if (layEvent === 'detail') {
                     layer.msg('查看操作');
                 } else if (layEvent === 'del') {
-                    layer.load(2, { shade: false });
                     layer.confirm('这个是一个不可逆的操作，确定要删除该用户？', {
                         btn: ['确定', '取消']
                     }, function (index) {
+                        layer.close(index);
+                        layer.load(2, { shade: false });
                         $.post("/User/DelUser", { ID: obj.data.id }, function (res) {
                             if (res == "success") {
                                 layer.msg("删除成功");
@@ -65,7 +66,6 @@
                                 layer.alert(res);
                             };
                             layer.closeAll('loading');
-                            layer.close(index);
                         });
                     });
                 } else if (layEvent === 'edit') {

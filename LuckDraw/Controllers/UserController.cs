@@ -52,14 +52,14 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult EditUser(int ID)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
             return View(EF.Signs.FirstOrDefault(x => x.ID == ID));
         }
         [HttpPost]
         public IActionResult EditUser(Sign sign)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
 
             try
@@ -82,14 +82,14 @@ namespace LuckDraw.Controllers
         [HttpGet]
         public IActionResult AddUser()
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
             return View();
         }
         [HttpPost]
         public IActionResult AddUser(Sign sign)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
             try
             {
@@ -115,10 +115,10 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult DelUser(int ID)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
 
-            if (ID == 1)
+            if (EF.Signs.FirstOrDefault(x => x.Identity == 1).ID == ID)
                 return Content("此账户禁止被修改");
 
             if (EF.Signs.Where(x => x.Identity == 1).ToList().Count <= 1)
@@ -127,19 +127,20 @@ namespace LuckDraw.Controllers
             if (ID == HttpContext.Session.GetModel<Sign>("User").ID)
                 return Content("管理员不允许删除自己");
 
-            var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
-            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
-            if (info.ToList().Count > 0)
-                foreach (var item in info)
-                    EF.Remove(item);
-            EF.Remove(mod);
-
-            var draw = EF.Draws.Where(x => x.SignID == ID);
-            foreach (var item in draw)
-                EF.Remove(EF.LuckDraws.Where(x => x.DrawID == item.ID));
-            EF.Remove(draw);
-
-            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID));
+            //清空用户抽奖项目
+            var draws = EF.Draws.Where(x => x.SignID == ID);
+            foreach (var draw in draws)
+                EF.Remove(draw);
+            //清空用户抽奖项以及奖项绑定关系
+            var lucks = EF.Lucks.Where(x => x.SignID == ID);
+            foreach (var luck in lucks)
+            {
+                foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
+                    EF.Remove(luckDraw);
+                EF.Remove(luck);
+            }
+            //删除用户
+            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
 
             try
             {
@@ -154,22 +155,28 @@ namespace LuckDraw.Controllers
 
         //前台用户自主注销
         [HttpPost]
-        public IActionResult ZhuXiao()
+        public IActionResult ZhuXiao(int ID)
         {
-            var ID = HttpContext.Session.GetModel<Sign>("User").ID;
-            var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
-            var info = EF.Lucks.Where(x => x.ParentID == mod.ID);
-            if (info.ToList().Count > 0)
-                foreach (var item in info)
-                    EF.Remove(item);
-            EF.Remove(mod);
+            if (HttpContext.Session.GetModel<Sign>("User").Identity == 1)
+                return Content("管理员账户无法注销");
 
-            var draw = EF.Draws.Where(x => x.SignID == ID);
-            foreach (var item in draw)
-                EF.Remove(EF.LuckDraws.Where(x => x.DrawID == item.ID));
-            EF.Remove(draw);
-
+            ID = HttpContext.Session.GetModel<Sign>("User").ID;
+            var draws = EF.Draws.Where(x => x.SignID == ID);
+            //清空抽奖项目
+            foreach (var draw in draws)
+                EF.Remove(draw);
+            //清空用户抽奖项以及奖项绑定关系
+            var lucks = EF.Lucks.Where(x => x.SignID == ID);
+            foreach (var luck in lucks)
+            {
+                foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
+                    EF.Remove(luckDraw);
+                EF.Remove(luck);
+            }
+            //删除用户
             EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
+            //清空Session
+            HttpContext.Session.SetModel("User", null);
 
             try
             {
@@ -192,14 +199,15 @@ namespace LuckDraw.Controllers
 
         public IActionResult Manager()
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
             return View();
         }
+
         [HttpPost]
         public IActionResult MagList(int page = 1, int limit = 10)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return Json(new { code = 0, count = 0, msg = "账户权限异常" });
             var mod = (from s in EF.Signs
                        select new
@@ -223,7 +231,7 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult SwichStatus(int SignID)
         {
-            if (EF.Signs.FirstOrDefault(x => x.ID == HttpContext.Session.GetModel<Sign>("User").ID).Identity != 1)
+            if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return Content("账户权限异常");
 
             if (SignID == 1)
@@ -233,7 +241,7 @@ namespace LuckDraw.Controllers
                 return Content("系统至少要存在一个管理员");
 
             if (SignID == HttpContext.Session.GetModel<Sign>("User").ID)
-                return Content("管理员不允许更改自身权限");
+                return Content("无法更改自身的权限");
 
             var mod = EF.Signs.FirstOrDefault(x => x.ID == SignID);
             if (mod.Status)

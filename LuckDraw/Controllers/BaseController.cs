@@ -15,7 +15,7 @@ namespace LuckDraw.Controllers
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.HttpContext.Request.Path == "/User/Logout")
+            if (context.HttpContext.Request.Path == "/User/Logout" || context.HttpContext.Request.Path == "/User/Auth")
             {
                 // Add address to whitelist.
             }
