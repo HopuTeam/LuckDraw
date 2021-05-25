@@ -62,12 +62,22 @@ namespace LuckDraw.Controllers
             if (HttpContext.Session.GetModel<Sign>("User").Identity != 1)
                 return View("/Views/Error/Index.cshtml");
 
+            if (EF.Signs.FirstOrDefault(x => x.Identity == 1).ID == sign.ID)
+                return Content("此账户禁止被修改");
+
+            if (EF.Signs.Where(x => x.Identity == 1).ToList().Count <= 1 && sign.Identity == 0)
+                return Content("系统至少要存在一个管理员");
+
+            if (sign.ID == HttpContext.Session.GetModel<Sign>("User").ID)
+                return Content("管理员不允许修改自己");
+
             try
             {
                 var mod = EF.Signs.FirstOrDefault(x => x.ID == sign.ID);
                 mod.Account = sign.Account;
                 mod.Email = sign.Email;
-                mod.Password = Security.MD5Encrypt32(sign.Password);
+                if (sign.Password != null)
+                    mod.Password = Security.MD5Encrypt32(sign.Password);
                 mod.Identity = sign.Identity;
                 EF.SaveChanges();
 

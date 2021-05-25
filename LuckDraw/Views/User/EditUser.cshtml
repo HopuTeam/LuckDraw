@@ -34,7 +34,7 @@
             <div class="input-group-prepend">
                 <span class="input-group-text">密码</span>
             </div>
-            <input type="password" required class="form-control" id="Password" placeholder="请输入密码">
+            <input type="password" class="form-control" id="Password" placeholder="请输入密码">
         </div>
         <div class="input-group inp-box">
             <div class="input-group-prepend">
@@ -58,11 +58,6 @@
                         <option selected value="1">管理员</option>
                         break;
                 }
-                @*@if (Model.Identity == 0)
-                    {
-                        <option selected value="0">用户</option>
-                        <option value="1">管理员</option>
-                    }*@
             </select>
         </div>
         <div style="margin-top:10px;">
@@ -85,16 +80,16 @@
                 Email: $("#Email").val(),
                 Identity: $("#Identity").val()
             };
-            $.post("/User/AddUser", data, function (res) {
-                setTimeout(function () {
-                    layer.closeAll('loading');
-                }, 350);
-                layer.alert(res.message);
-                if (res.status) {
+            $.post("/User/EditUser", data, function (res) {
+                if (res == "success") {
+                    layer.msg("修改成功");
                     setTimeout(function () {
                         window.parent.closeFrame();
                     }, 1500);
+                } else {
+                    layer.alert(res);
                 }
+                layer.closeAll('loading');
             });
             return false;
         });
