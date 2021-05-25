@@ -127,23 +127,23 @@ namespace LuckDraw.Controllers
             if (ID == HttpContext.Session.GetModel<Sign>("User").ID)
                 return Content("管理员不允许删除自己");
 
-            //清空用户抽奖项目
-            var draws = EF.Draws.Where(x => x.SignID == ID);
-            foreach (var draw in draws)
-                EF.Remove(draw);
-            //清空用户抽奖项以及奖项绑定关系
-            var lucks = EF.Lucks.Where(x => x.SignID == ID);
-            foreach (var luck in lucks)
-            {
-                foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
-                    EF.Remove(luckDraw);
-                EF.Remove(luck);
-            }
-            //删除用户
-            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
-
             try
             {
+                //清空用户抽奖项目
+                var draws = EF.Draws.Where(x => x.SignID == ID);
+                foreach (var draw in draws)
+                    EF.Remove(draw);
+                //清空用户抽奖项以及奖项绑定关系
+                var lucks = EF.Lucks.Where(x => x.SignID == ID);
+                foreach (var luck in lucks)
+                {
+                    foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
+                        EF.Remove(luckDraw);
+                    EF.Remove(luck);
+                }
+                //删除用户
+                EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
+
                 EF.SaveChanges();
                 return Content("success");
             }
@@ -161,25 +161,25 @@ namespace LuckDraw.Controllers
                 return Content("管理员账户无法注销");
 
             ID = HttpContext.Session.GetModel<Sign>("User").ID;
-            var draws = EF.Draws.Where(x => x.SignID == ID);
-            //清空抽奖项目
-            foreach (var draw in draws)
-                EF.Remove(draw);
-            //清空用户抽奖项以及奖项绑定关系
-            var lucks = EF.Lucks.Where(x => x.SignID == ID);
-            foreach (var luck in lucks)
-            {
-                foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
-                    EF.Remove(luckDraw);
-                EF.Remove(luck);
-            }
-            //删除用户
-            EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
-            //清空Session
-            HttpContext.Session.SetModel("User", null);
-
             try
             {
+                var draws = EF.Draws.Where(x => x.SignID == ID);
+                //清空抽奖项目
+                foreach (var draw in draws)
+                    EF.Remove(draw);
+                //清空用户抽奖项以及奖项绑定关系
+                var lucks = EF.Lucks.Where(x => x.SignID == ID);
+                foreach (var luck in lucks)
+                {
+                    foreach (var luckDraw in EF.LuckDraws.Where(x => x.LuckID == luck.ID))
+                        EF.Remove(luckDraw);
+                    EF.Remove(luck);
+                }
+                //删除用户
+                EF.Remove(EF.Signs.FirstOrDefault(x => x.ID == ID));
+                //清空Session
+                HttpContext.Session.SetModel("User", null);
+
                 EF.SaveChanges();
                 return Content("success");
             }
@@ -243,14 +243,14 @@ namespace LuckDraw.Controllers
             if (SignID == HttpContext.Session.GetModel<Sign>("User").ID)
                 return Content("无法更改自身的权限");
 
-            var mod = EF.Signs.FirstOrDefault(x => x.ID == SignID);
-            if (mod.Status)
-                mod.Status = false;
-            else
-                mod.Status = true;
-
             try
             {
+                var mod = EF.Signs.FirstOrDefault(x => x.ID == SignID);
+                if (mod.Status)
+                    mod.Status = false;
+                else
+                    mod.Status = true;
+
                 EF.SaveChanges();
                 return Content("操作成功");
             }

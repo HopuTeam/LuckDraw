@@ -115,13 +115,12 @@ namespace LuckDraw.Controllers
         {
             try
             {
-                var mod = EF.Draws.FirstOrDefault(x => x.ID == ID);
-                var info = EF.LuckDraws.Where(x => x.DrawID == ID);
-                if (info.ToList().Count > 0)
-                    foreach (var item in info)
-                        EF.Remove(item);
+                var Draw = EF.Draws.FirstOrDefault(x => x.ID == ID);
+                var luckDraws = EF.LuckDraws.Where(x => x.DrawID == ID);
+                foreach (var luckDraw in luckDraws)
+                    EF.Remove(luckDraw);
+                EF.Remove(Draw);
 
-                EF.Remove(mod);
                 EF.SaveChanges();
                 return Content("success");
             }
