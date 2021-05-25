@@ -282,6 +282,9 @@ namespace LuckDraw.Controllers
         public IActionResult SendMail()
         {
             var mod = HttpContext.Session.GetModel<Sign>("User");
+            if (EF.Signs.FirstOrDefault(x => x.ID == mod.ID).Status)
+                return Content("您的帐号已通过认证");
+
             Random random = new Random();
             HttpContext.Session.SetString("Code", Security.MD5Encrypt32(random.Next(0, 9999).ToString()).Substring(random.Next(1, 16), 6).ToUpper());
 
