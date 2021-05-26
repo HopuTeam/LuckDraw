@@ -3,6 +3,7 @@
     ViewData["Title"] = "Two";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <h2>@Model.Name</h2>
 <hr />
 <div class="row text-center">
@@ -10,7 +11,7 @@
         <h4>待抽奖项</h4>
         <div id="div1"></div>
     </div>
-    <div class="col">
+   <div class="col">
         <button type="button" class="btn btn-info" style="margin: 5px;" id="chou">抽取幸运观众</button>
     </div>
     <div class="col">
@@ -35,10 +36,10 @@
                     //判断时间是否为空
                     //debugger
                     if (item.time == null) {
-                        content1 += `<div class="btn btn-success" style="margin: 5px;" onclick="ID(${item.id})">${item.name}</div>`;
-                        //待抽奖项
+                        content1 += `<div class="btn btn-success" style="margin: 5px;" onclick="ID(${item.id})">${(item.name)}</div>`;
+                        //待抽奖项                   
                     } else {
-                        content2 += `<div class="btn btn-sm btn-warning" style="margin: 5px;" onclick="ID(${item.id})">${item.name}<br />${item.time}</div>`;
+                        content2 += `<div class="btn btn-sm btn-warning" style="margin: 5px;" onclick="ID(${item.id})">${item.name}<br />${(item.time)}</div>`;
                         //抽到奖项
                     };
                 };

@@ -183,21 +183,20 @@ namespace LuckDraw.Controllers
                         select new
                         {
                             ID = LuckDraw.ID,
-                            Name = Luck.Name,
+                            Name = GetHtmlEntities(Luck.Name),
                             Time = LuckDraw.EntryTime.ToString().Substring(0, 19),
                         }).ToList();
-            //foreach (var item in list)
-            //{
-            //    if (item.Time == null)
-            //    {
-            //        return Json();
-            //    }
-            //    else
-            //    {
-
-            //    }
-            //}
             return Json(list);
+        }
+
+        //Html实体编码
+        private static string GetHtmlEntities(string str)
+        {
+            string r = string.Empty;
+            for (int i = 0; i < str.Length; i++)
+                r += "&#" + char.ConvertToUtf32(str, i) + ";";
+
+            return r;
         }
 
         public IActionResult NonLucky(int ID)

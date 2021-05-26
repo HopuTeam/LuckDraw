@@ -48,8 +48,7 @@
                 var content = '', divhtml = '';
                 for (item of res) {
                     //divhtml += `<div>${item.Name}</div>`;
-                    content += `<button type="button" style="margin-top:10px;margin-right:10px;"
-class="btn btn-success">${item.name}（${item.cishu}）</button>`;
+                    content += `<button type="button" style="margin-top:10px;margin-right:10px;" class="btn btn-success">${(item.name)}（${item.cishu}）</button>`;
                 };
                 $('#content-body').html(content);
                 //$('.luck-option').html(divhtml);
@@ -70,7 +69,7 @@ class="btn btn-success">${item.name}（${item.cishu}）</button>`;
             return false;
         })
 
-        function empty()
+        function empty0()
         {
             $.post('/Play/Empty', { Drawid: @Model.Drawid }, function (res) {
                 layer.alert(res);

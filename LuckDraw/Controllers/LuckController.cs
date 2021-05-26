@@ -45,9 +45,6 @@ namespace LuckDraw.Controllers
         [HttpPost]
         public IActionResult MulitAdd(int ID, string Text)
         {
-            if (Text == null)
-                return Content("请填写需要导入的数据");
-
             var list = Text.Split(new string[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
             var userID = HttpContext.Session.GetModel<Sign>("User").ID;
             try
@@ -62,7 +59,7 @@ namespace LuckDraw.Controllers
                         SignID = userID,
                         Weigh = 1,
                     };
-                    EF.Lucks.Add(luck);
+                    EF.Lucks.Add(luck);                
                 }
                 EF.SaveChanges();
                 return Content("success");
@@ -104,20 +101,19 @@ namespace LuckDraw.Controllers
         {
             try
             {
-                var delLuck = EF.Lucks.FirstOrDefault(x => x.ID == ID);
-                var lucks = EF.Lucks.Where(x => x.ParentID == delLuck.ID);
-                foreach (var luck in lucks)
+                var mod = EF.Lucks.FirstOrDefault(x => x.ID == ID);
+                var info = EF.Lucks.Where(x => x.ParentID == mod.ID).ToList();
+                if (info.Count > 0)
                 {
-                    var del = EF.LuckDraws.FirstOrDefault(x => x.LuckID == luck.ID);
-                    EF.Remove(del);
-                    EF.Remove(luck);
+                    foreach (var item in info)
+                    {
+                        var del = EF.LuckDraws.FirstOrDefault(x => x.LuckID == item.ID);
+                        EF.Remove(del);
+                        EF.Remove(item);
+                    }
                 }
 
-                var luckDraw = EF.LuckDraws.FirstOrDefault(x => x.LuckID == delLuck.ID);
-                if (luckDraw != null)
-                    EF.Remove(luckDraw);
-                EF.Remove(delLuck);
-
+                EF.Remove(mod);
                 EF.SaveChanges();
                 return Content("success");
             }
@@ -126,8 +122,8 @@ namespace LuckDraw.Controllers
                 return Content(ex.Message);
             }
         }
-
-        public IActionResult ExcelAdd(IFormFile file, int Pid)
+  
+        public IActionResult ExcelAdd(IFormFile file,int Pid)
         {
             List<Luck> lstLuck = new List<Luck>();
             var userID = HttpContext.Session.GetModel<Sign>("User").ID;
@@ -138,14 +134,14 @@ namespace LuckDraw.Controllers
             catch (Exception ex)
             {
 
-                return Content("数据错误，请检查表格数据   " + ex);
+                return Content("数据错误，请检查表格数据   "+ex);
             }
-            if (lstLuck.Count > 0)
+            if (lstLuck.Count>0)
             {
                 foreach (var item in lstLuck)
                 {
                     Luck objluck = new Luck();
-                    if (item.Description.Length < 1)
+                    if (item.Description.Length<1)
                     {
                         objluck.Description = item.Name;
                     }
@@ -154,11 +150,11 @@ namespace LuckDraw.Controllers
                         objluck.Name = item.Name;
                     }
 
-                    if (item.Weigh < 1)
+                    if (item.Weigh<1)
                     {
                         objluck.Weigh = 1;
                     }
-                    else if (item.Weigh > 10)
+                    else if(item.Weigh > 10)
                     {
                         objluck.Weigh = 10;
                     }
@@ -171,9 +167,9 @@ namespace LuckDraw.Controllers
                     objluck.ParentID = Pid;
                     objluck.Name = item.Name;
                     EF.Lucks.Add(objluck);
-                }
+                }             
             }
-            int c = EF.SaveChanges();
+            int c= EF.SaveChanges();
             return Content("success");
         }
     }

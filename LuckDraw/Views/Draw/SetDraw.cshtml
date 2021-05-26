@@ -50,13 +50,13 @@
         {
             <div class="col-md-12">
                 <p class="ops-group group_p_@item.ID" data-childcount="" onclick="push(this,@item.ID, true)" title="156" style="border-color: #000000;">
-                    @Html.Raw(item.Name)
+                    @(item.Name)
                 </p>
                 @foreach (var b in Model.Where(b => b.ParentID == item.ID))//二级=>抽奖项名字
                 {
                     <div class="col-md-12 ">
                         <div data-id="@b.ID" onclick="push(this,@item.ID)" class="luck-ops group_ops_@item.ID" style="border-color: #000000;">
-                            @Html.Raw(b.Name)
+                            @(b.Name)
                         </div>
                     </div>
                 }
