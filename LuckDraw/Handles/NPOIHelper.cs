@@ -27,75 +27,90 @@ namespace LuckDraw.Handles
                 IRow celNum = sheet.GetRow(0);
                 PropertyInfo[] properties = typeof(T).GetProperties();//获取模型所有字段的类型
                 string value = null;
-                int num = celNum.LastCellNum;//Excel的列数数
-                var n = sheet.LastRowNum;
+                int num = celNum.LastCellNum;//Excel的列数           
                 for (int i = 1; i <= sheet.LastRowNum; i++)//行数
                 {
                     IRow row = sheet.GetRow(i);
+                    if (row == null)//判断行是否为空
+                    {
+                        continue;
+                    }
                     var obj = new T();
-                    for (int j = 0; j < num; j++)
+                    for (int j = 0; j < 3; j++)
                     {
                         value = row.GetCell(j, MissingCellPolicy.CREATE_NULL_AS_BLANK).ToString();
-                        string strGettype = (properties[j+1].PropertyType).FullName;
+                        if (string.IsNullOrEmpty(value.ToString()))
+                        {
+                            continue;
+                        }
+                        if (j==2)
+                        {
+                            int G = 0;
+                            if (!int.TryParse(value, out G))
+                            {
+                                value = G.ToString();
+                            }
+                        }
+                        string strGettype = (properties[j + 1].PropertyType).FullName;
                         switch (strGettype)
                         {
                             case "System.String":
                                 {
-                                    properties[j+1].SetValue(obj, value, null);
+                                    properties[j + 1].SetValue(obj, value, null);
                                     break;
                                 }
                             case "System.DateTime":
                                 {
                                     DateTime time = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
-                                    properties[j+1].SetValue(obj, time, null);
+                                    properties[j + 1].SetValue(obj, time, null);
                                     break;
                                 }
                             case "System.Boolean":
                                 {
                                     bool bol = Convert.ToBoolean(value);
-                                    properties[j+1].SetValue(obj, bol, null);
+                                    properties[j + 1].SetValue(obj, bol, null);
                                     break;
                                 }
                             case "System.Int16":
                                 {
                                     short int16 = Convert.ToInt16(value);
-                                    properties[j+1].SetValue(obj, int16, null);
+                                    properties[j + 1].SetValue(obj, int16, null);
                                     break;
                                 }
                             case "System.Int64":
                                 {
                                     long int64 = Convert.ToInt64(value);
-                                    properties[j+1].SetValue(obj, int64, null);
+                                    properties[j + 1].SetValue(obj, int64, null);
                                     break;
                                 }
                             case "System.Int32":
                                 {
                                     int int32 = Convert.ToInt32(value);
-                                    properties[j+1].SetValue(obj, int32, null);
+                                    properties[j + 1].SetValue(obj, int32, null);
                                     break;
                                 }
                             case "System.Byte":
                                 {
                                     byte by = Convert.ToByte(value);
-                                    properties[j+1].SetValue(obj, by, null);
+                                    properties[j + 1].SetValue(obj, by, null);
                                     break;
                                 }
                             case "System.Double":
                                 {
                                     byte dou = Convert.ToByte(value);
-                                    properties[j+1].SetValue(obj, dou, null);
+                                    properties[j + 1].SetValue(obj, dou, null);
                                     break;
                                 }
                             case "System.Decimal":
                                 {
                                     decimal dec = Convert.ToDecimal(value);
-                                    properties[j+1].SetValue(obj, dec, null);
+                                    properties[j + 1].SetValue(obj, dec, null);
                                     break;
                                 }
                             default:
-                                properties[j+1].SetValue(obj, null, null);
+                                properties[j + 1].SetValue(obj, null, null);
                                 break;
-                        }                      
+                        }
                     }
                     list.Add(obj);
                 }
